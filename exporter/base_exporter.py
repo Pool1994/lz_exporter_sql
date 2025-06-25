@@ -3,7 +3,10 @@ import mysql.connector
 from config.db_config import DBConfig
 from config.export_options import ExportOptions
 from datetime import datetime
-
+from exporter.store_procedure_exporter import StoreProcedureExporter
+from exporter.trigger_exporter import TriggerExporter
+from exporter.event_exporter import EventExporter
+from exporter.functions_exporter import FunctionsExporter
 class BaseExporter:
     def __init__(self,db_config:DBConfig, export_options:ExportOptions, output_directory:str):
         self.db_config = db_config
@@ -23,4 +26,23 @@ class BaseExporter:
         output_dir = os.path.join("export_sql",f"{db}_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
         os.makedirs(output_dir, exist_ok=True)
         
+        if self.export_options.store_procedures:
+            storeProcedure = StoreProcedureExporter(cursor=cursor, dbName=db, base_folder= output_dir)
+            path_dir = storeProcedure.export()
+            print(f"Procedimientos almacenados exportados a: {path_dir}")
+        if self.export_options.triggers:
+            triggers = TriggerExporter(cursor=cursor, dbName=db, base_folder= output_dir)
+            path_dir = triggers.export()
+            print(f"Triggers exportados a: {path_dir}")
         
+        if self.export_options.events:
+            events_exp = EventExporter(cursor=cursor, dbName=db, base_folder= output_dir)
+            path_dir = events_exp.export()
+            print(f"Events exportados a: {path_dir}")
+        
+        if self.export_options.functions:
+            functions_ex = FunctionsExporter(cursor=cursor, dbName=db, base_folder= output_dir)
+            path_dir = functions_ex.export()
+            print(f"Functions exportados a: {path_dir}")
+            
+        print(f"Exportación completada. Archivos guardados en: {output_dir}")

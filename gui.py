@@ -21,6 +21,18 @@ class ExportApp:
         self.events_var = ttk.BooleanVar(value=True)
         self.stored_procedures_var = ttk.BooleanVar(value=True)
         self.output_directory = ttk.StringVar()
+        
+        # Configuración de conexión a la base de datos
+        # Valores por defecto, se pueden cambiar según sea necesario
+        # Estos valores se pueden cambiar en la interfaz de usuario
+        # o se pueden cargar desde un archivo de configuración
+        # o variables de entorno si se desea mayor flexibilidad.
+        # Aquí se usan valores por defecto para simplificar el ejemplo.
+        self.host = ttk.StringVar(value="127.0.0.1")
+        self.user = ttk.StringVar(value="root")
+        self.password = ttk.StringVar(value="password")
+        self.database = ttk.StringVar(value="amgsoft2025")
+        
 
         
         self.createWidgets()
@@ -40,10 +52,10 @@ class ExportApp:
         origin_frame.grid(row=0,column=0,padx=10,pady=10,sticky="nsew")
         origin_frame.columnconfigure(0, weight=1)
         
-        self.origin_host = ttk.Entry(origin_frame)
-        self.origin_user = ttk.Entry(origin_frame)
-        self.origin_password = ttk.Entry(origin_frame, show="*")
-        self.origin_database = ttk.Entry(origin_frame)
+        self.origin_host = ttk.Entry(origin_frame,textvariable=self.host)
+        self.origin_user = ttk.Entry(origin_frame, textvariable= self.user)
+        self.origin_password = ttk.Entry(origin_frame, show="*", textvariable=self.password)
+        self.origin_database = ttk.Entry(origin_frame, textvariable= self.database)
         self.export_path = ttk.Entry(origin_frame,textvariable=self.output_directory,state="readonly")
         #ORIgEN HOST
         ttk.Label(origin_frame,text="Host / IP:").grid(row=0,column=0,sticky="w", columnspan=2)
