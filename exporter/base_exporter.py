@@ -32,6 +32,7 @@ class BaseExporter:
         os.makedirs(output_dir, exist_ok=True)
         
         filesPaths = [
+            joinFilePath(output_dir,'00_tables.sql'),
             joinFilePath(output_dir,'00_stored_procedures.sql'),
             joinFilePath(output_dir,'00_triggers.sql'),
             joinFilePath(output_dir,'00_events.sql'),
@@ -47,6 +48,7 @@ class BaseExporter:
                progress_callback= self.progress_callbacks.tables
             )
            res = table_export.export_database()
+           mergeSqlFiles(output_dir,filesPaths[0])
            pprint(f"Tablas encontradas: {res}")
         
         # Seccion 2: Exportar objetos almacenados
@@ -58,7 +60,7 @@ class BaseExporter:
                 progress_callback= self.progress_callbacks.procedures
             )
             path_dir = storeProcedure.export()
-            mergeSqlFiles(path_dir,filesPaths[0])
+            mergeSqlFiles(path_dir,filesPaths[1])
             print(f"Procedimientos almacenados exportados a: {path_dir}")
             
         # Seccion 3: Exportar disparadores (triggers)
@@ -70,7 +72,7 @@ class BaseExporter:
                 progress_callback= self.progress_callbacks.triggers
             )
             path_dir = triggers.export()
-            mergeSqlFiles(path_dir, filesPaths[1])
+            mergeSqlFiles(path_dir, filesPaths[2])
             print(f"Triggers exportados a: {path_dir}")
         
         # Seccion 4: Exportar eventos
@@ -82,7 +84,7 @@ class BaseExporter:
                 progress_callback= self.progress_callbacks.events
             )
             path_dir = events_exp.export()
-            mergeSqlFiles(path_dir, filesPaths[2])
+            mergeSqlFiles(path_dir, filesPaths[3])
             print(f"Events exportados a: {path_dir}")
         
         # Seccion 5: Exportar funciones
@@ -94,7 +96,7 @@ class BaseExporter:
                 progress_callback= self.progress_callbacks.functions
             )
             path_dir = functions_ex.export()
-            mergeSqlFiles(path_dir, filesPaths[3])
+            mergeSqlFiles(path_dir, filesPaths[4])
             print(f"Functions exportados a: {path_dir}")
         
         #merge files
