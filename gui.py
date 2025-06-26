@@ -44,9 +44,9 @@ class ExportApp:
         
         self.createWidgets()
     def createWidgets(self):
-        title = ttk.Label(self.root, text="🗃️ Database Export Tool", font=("Helvetica", 20, "bold"),bootstyle="default")
+        title = ttk.Label(self.root, text="🗃️ Herramienta de Exportación de Bases de Datos", font=("Helvetica", 20, "bold"),bootstyle="default")
         title.pack(pady=10)
-        subtitle = ttk.Label(self.root, text="Exporta datos, estructura y objetos de base de datos", font=("Helvetica", 10),bootstyle="secondary")
+        subtitle = ttk.Label(self.root, text="Exporta tablas, funciones y objetos de tu base de datos MySQL", font=("Helvetica", 10),bootstyle="secondary")
         subtitle.pack()
         
          # === Contenedor principal ===
@@ -55,7 +55,7 @@ class ExportApp:
         main_frame.columnconfigure(0, weight=1)
         
          # === Frame izquierdo: Origen ===
-        origin_frame = ttk.Labelframe(main_frame,text="📘 Base de Datos Origen",bootstyle="info",padding=10)
+        origin_frame = ttk.Labelframe(main_frame,text="📘 Detalles de Conexión",bootstyle="info",padding=10)
         origin_frame.grid(row=0,column=0,padx=10,pady=10,sticky="nsew")
         origin_frame.columnconfigure(0, weight=1)
         
@@ -65,29 +65,29 @@ class ExportApp:
         self.origin_database = ttk.Entry(origin_frame, textvariable= self.database)
         self.export_path = ttk.Entry(origin_frame,textvariable=self.output_directory,state="readonly")
         #ORIgEN HOST
-        ttk.Label(origin_frame,text="Host / IP:").grid(row=0,column=0,sticky="w", columnspan=2)
+        ttk.Label(origin_frame,text="Servidor (Host/IP):").grid(row=0,column=0,sticky="w", columnspan=2)
         self.origin_host.grid(row=1, column=0, sticky="ew")
         
         #USER
-        ttk.Label(origin_frame, text="Usuario:").grid(row=2, column=0, sticky="w")
+        ttk.Label(origin_frame, text="Usuario de MySQL:").grid(row=2, column=0, sticky="w")
         self.origin_user.grid(row=3,column=0,sticky="w")
         
         #PASSWORD
-        ttk.Label(origin_frame, text="Contraseña:").grid(row=4, column=0, sticky="w")
+        ttk.Label(origin_frame, text="Contraseña de MySQL:").grid(row=4, column=0, sticky="w")
         self.origin_password.grid(row=5, column=0, sticky="w")
         
         #DATABASE
-        ttk.Label(origin_frame, text="Base de Datos:").grid(row=6, column=0, sticky="w")
+        ttk.Label(origin_frame, text="Nombre de la Base de Datos:").grid(row=6, column=0, sticky="w")
         self.origin_database.grid(row=7, column=0, sticky="w")
         
         #PATH
-        ttk.Label(origin_frame, text="Ruta de Exportación:").grid(row=8, column=0, sticky="w")
+        ttk.Label(origin_frame, text="Carpeta de destino para la exportación:").grid(row=8, column=0, sticky="w")
         self.export_path.grid(row=9, column=0, sticky="ew",pady=2)
-        ttk.Button(origin_frame,text="Seleccionar", bootstyle="secondary",command=self.selectOutputPath).grid(row=9,column=1,sticky="e",pady=(0, 5))
+        ttk.Button(origin_frame,text="Elegir Carpeta", bootstyle="secondary",command=self.selectOutputPath).grid(row=9,column=1,sticky="e",pady=(0, 5))
         # Frame opciones de exportación
         export_options_frame = ttk.Labelframe(
             main_frame,
-            text="⚙️ Opciones de Exportación",
+            text="⚙️ Qué deseas exportar?",
             bootstyle="primary",
             padding=10
         )
@@ -97,7 +97,7 @@ class ExportApp:
         # Subtítulo (puede ser solo un Label dentro del Labelframe)
         ttk.Label(
             export_options_frame,
-            text="Selecciona qué elementos deseas exportar",
+            text="Selecciona los elementos a incluir en la exportación",
             font=("Helvetica", 9),
             bootstyle="secondary"
         ).grid(row=0, column=0, columnspan=3, sticky="w", pady=(0, 10))
@@ -110,31 +110,30 @@ class ExportApp:
         estructura_frame.grid(row=1, column=0, sticky="nsew", padx=10)
 
         ttk.Label(estructura_frame, text="🗄️ Estructura y Datos", font=("Helvetica", 10, "bold")).pack(anchor="w", pady=(0, 5))
-        ttk.Checkbutton(estructura_frame, text="Estructura de tablas", bootstyle="success",variable=self.data_table_var).pack(anchor="w", pady=2)
-        ttk.Checkbutton(estructura_frame, text="Datos de tablas", bootstyle="success",variable=self.data_table_var).pack(anchor="w", pady=2)
+        ttk.Checkbutton(estructura_frame, text="Solo estructura de tablas", bootstyle="success",variable=self.data_table_var).pack(anchor="w", pady=2)
+        ttk.Checkbutton(estructura_frame, text="Solo datos de tablas", bootstyle="success",variable=self.data_table_var).pack(anchor="w", pady=2)
 
         # === Columna 2: Objetos de Base de Datos ===
         objetos_frame = ttk.Frame(export_options_frame)
         objetos_frame.grid(row=1, column=1, sticky="nsew", padx=10)
 
         ttk.Label(objetos_frame, text="⚙️ Objetos de Base de Datos", font=("Helvetica", 10, "bold")).pack(anchor="w", pady=(0, 5))
-        ttk.Checkbutton(objetos_frame, text="Stored Procedures",variable=self.stored_procedures_var).pack(anchor="w", pady=2)
-        ttk.Checkbutton(objetos_frame, text="Functions",variable=self.functions_var).pack(anchor="w", pady=2)
+        ttk.Checkbutton(objetos_frame, text="Procedimientos Almacenados",variable=self.stored_procedures_var).pack(anchor="w", pady=2)
+        ttk.Checkbutton(objetos_frame, text="Funciones",variable=self.functions_var).pack(anchor="w", pady=2)
 
         # === Columna 3: Eventos y Triggers ===
         eventos_frame = ttk.Frame(export_options_frame)
         eventos_frame.grid(row=1, column=2, sticky="nsew", padx=10)
 
         ttk.Label(eventos_frame, text="ℹ️ Eventos y Triggers", font=("Helvetica", 10, "bold")).pack(anchor="w", pady=(0, 5))
-        ttk.Checkbutton(eventos_frame, text="Triggers",variable=self.triggers_var).pack(anchor="w", pady=2)
-        ttk.Checkbutton(eventos_frame, text="Events",variable=self.events_var).pack(anchor="w", pady=2)  
+        ttk.Checkbutton(eventos_frame, text="Disparadores (Triggers)",variable=self.triggers_var).pack(anchor="w", pady=2)
+        ttk.Checkbutton(eventos_frame, text="Eventos",variable=self.events_var).pack(anchor="w", pady=2)  
         
         # Botón: Iniciar Exportación (centrado)
         export_button = ttk.Button(
             main_frame,
             text="🚀 Iniciar Exportación",
             bootstyle="primary",
-            width=25,  # ancho opcional
             command=self.export_action,  # tu función de exportación
             default="disabled"
         )
@@ -151,7 +150,7 @@ class ExportApp:
         # Progreso de Exportación
         progress_fram = ttk.Labelframe(
             main_frame,
-            text="📊 Progreso de Exportación",
+            text="📊 Estado del Proceso de Exportación",
             bootstyle="primary",
             padding=10
         )
@@ -183,7 +182,7 @@ class ExportApp:
             }
             self.progress_bars[key]["label"].grid(row=3+idx, column=3, padx=(5, 0))
         
-        self.elapsed_time_label = ttk.Label(progress_fram, text="Duración: 0s", font=("Helvetica", 9, "italic"))
+        self.elapsed_time_label = ttk.Label(progress_fram, text="Tiempo transcurrido: 0s", font=("Helvetica", 9, "italic"))
         self.elapsed_time_label.grid(row=10, column=0, columnspan=4, sticky="w", padx=10, pady=(10, 0))
     def export_action(self):
         db_config = {
@@ -194,7 +193,10 @@ class ExportApp:
         }
         
         if not all(db_config.values()):
-            messagebox.showerror("Error", "Por favor, completa todos los campos de la base de datos.")
+            messagebox.showerror("Error", "Faltan datos de conexión. Completa todos los campos.")
+            return
+        if not self.export_path.get():
+            messagebox.showwarning("Advertencia", "No seleccionaste una carpeta de destino")
             return
         try:
             self.start_time = time.time()
@@ -235,19 +237,23 @@ class ExportApp:
                      # Mostrar mensaje final en el hilo principal
                     self.root.after(0, lambda: [
                         self.stopTime(),
-                        self.setWidgetsState("normal"),  # Habilitar widgets nuevamente
+                        self.setWidgetsState("normal"),  # Habilitar widgets nuevamente,
+                        self.export_path.config(state="readonly"),
                         messagebox.showinfo("Éxito", "Exportación completada exitosamente.")
                     ])
                 except Exception as e:
                     self.root.after(0, lambda: [
                         self.stopTime(),
                         self.setWidgetsState("normal"),  # Habilitar widgets nuevamente
+                        self.export_path.config(state="readonly"),
                         messagebox.showerror("Error", f"Error al exportar: {e}")
                     ])
             threading.Thread(target=runExport).start()
             
         except Exception as e:
-            self.setWidgetsState("normal")  # Habilitar widgets nuevamente
+            self.stopTime(),
+            self.setWidgetsState("normal")  # Habilitar widgets nuevamente,
+            self.export_path.config(state="readonly"),
             messagebox.showerror("Error", f"Error al exportar: {e}")
             return
     def centerWindow(self, width:int, height:int):
@@ -269,7 +275,7 @@ class ExportApp:
         if selectPath:
             self.output_directory.set(selectPath)
         else:
-            messagebox.showwarning("Advertencia", "No se seleccionó ninguna ruta de exportación.")
+            messagebox.showwarning("Advertencia", "No seleccionaste una carpeta de destino")
     def update_progress(self, key: str, value: tuple):
         if key in self.progress_bars:
             current, total = value
@@ -288,7 +294,7 @@ class ExportApp:
         mins, secs = divmod(rem, 60)
         tiempo_formateado = f"{hrs:02}:{mins:02}:{secs:02}"
 
-        self.elapsed_time_label.config(text=f"Duración: {tiempo_formateado}")
+        self.elapsed_time_label.config(text=f"Tiempo transcurrido: {tiempo_formateado}")
         self.root.after(1000, self.updateTimer)  # Actualizar cada segundo
     
     def stopTime(self):
@@ -296,7 +302,7 @@ class ExportApp:
         hrs, rem = divmod(final_elapsed, 3600)
         mins, secs = divmod(rem, 60)
         tiempo_final = f"{hrs:02}:{mins:02}:{secs:02}"
-        self.elapsed_time_label.config(text=f"Duración final: {tiempo_final}")
+        self.elapsed_time_label.config(text=f"Tiempo Total: {tiempo_final}")
 
         self.start_time = None  # Detener temporizador
         
@@ -314,7 +320,7 @@ class ExportApp:
             self._set_state_recursive(child, state)
     def onClosing(self):
         if self.start_time is not None:
-            messagebox.showwarning("Exportación en curso", "No puedes cerrar la ventana mientras se exporta la base de datos.")
+            messagebox.showwarning("Exportación en curso", "Espera a que finalice para cerrar la aplicación.")
         else:
             self.root.destroy()
     
