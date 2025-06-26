@@ -48,7 +48,7 @@ class BaseExporter:
                progress_callback= self.progress_callbacks.tables
             )
            res = table_export.export_database()
-           mergeSqlFiles(output_dir,filesPaths[0])
+           mergeSqlFiles(path_dir,filesPaths[0])
            pprint(f"Tablas encontradas: {res}")
         
         # Seccion 2: Exportar objetos almacenados
