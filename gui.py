@@ -159,12 +159,11 @@ class ExportApp:
         progress_fram.columnconfigure((0,1,2), weight=1)
         
         progress_sections = [
-            ("Table Data","data_table"),
-            ("Stored Procedures","procedures"),
+            ("Tablas","data_table"),
+            ("Procedimientos almacenados","procedures"),
             ("Triggers","triggers"),
-            ("Events","events"),
-            ("Functions","functions"),
-
+            ("Eventos","events"),
+            ("Funciones","functions"),
         ]
         
         for idx, (label_text,key) in enumerate(progress_sections):
