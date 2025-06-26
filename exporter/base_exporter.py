@@ -30,6 +30,16 @@ class BaseExporter:
         output_dir = os.path.join("export_sql",f"{db}_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
         os.makedirs(output_dir, exist_ok=True)
         
+        if self.export_options.table_data:
+           table_export = DataTableExporter(
+               cursor=cursor, 
+               dbName=db, 
+               base_folder=output_dir,
+               progress_callback= self.progress_callbacks.tables
+            )
+           res = table_export.export_database()
+           pprint(f"Tablas encontradas: {res}")
+           
         if self.export_options.store_procedures:
             storeProcedure = StoreProcedureExporter(
                 cursor=cursor, 
@@ -69,8 +79,5 @@ class BaseExporter:
             path_dir = functions_ex.export()
             print(f"Functions exportados a: {path_dir}")
         
-        if self.export_options.table_data:
-           table_export = DataTableExporter(cursor=cursor, dbName=db, base_folder=output_dir)
-           res = table_export.export_database()
-           pprint(f"Tablas encontradas: {res}")
+        
         print(f"Exportación completada. Archivos guardados en: {output_dir}")

@@ -95,7 +95,11 @@ class DataTableExporter:
 
     def export_database(self):
         table_names = self.getTableNames()
-        for table in table_names:
+        total = len(table_names)
+        for i,table in enumerate(table_names, start=1):
             self.exportTableToFile(table)
             gc.collect()
+            
+            if self.progress_callback:
+                self.progress_callback((i, total))   
         return self.path_dir

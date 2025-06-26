@@ -1,5 +1,7 @@
+import threading
 import ttkbootstrap as ttk
 import os
+import time
 from ttkbootstrap.constants import *
 from tkinter import messagebox
 from tkinter import filedialog
@@ -10,6 +12,7 @@ from config.progress_callback import ProgressCallback
 class ExportApp:
     def __init__(self, root: ttk.Window):
         self.root = root
+        self.root.protocol("WM_DELETE_WINDOW", self.onClosing)  # Manejar cierre de ventana
         self.root.title("Database Export Tool")
         self.root.resizable(False, False)
         self.progress_bars = {}
@@ -35,6 +38,9 @@ class ExportApp:
         self.database = ttk.StringVar(value="amgsoft2025")
         
 
+        self.start_time = None
+        self.elapsed_time_label = None
+        self.start_time_temp = None
         
         self.createWidgets()
     def createWidgets(self):
@@ -129,10 +135,20 @@ class ExportApp:
             text="🚀 Iniciar Exportación",
             bootstyle="primary",
             width=25,  # ancho opcional
-            command=self.export_action  # tu función de exportación
+            command=self.export_action,  # tu función de exportación
+            default="disabled"
         )
         export_button.grid(row=2, column=0, columnspan=3, pady=15)
         
+        # stop_button = ttk.Button(
+        #     main_frame,
+        #     text="🛑 Stop",
+        #     bootstyle="primary",
+        #     command=self.stopExport,
+        # )
+        # stop_button.grid(row=2, column=1, columnspan=3)
+        
+        # Progreso de Exportación
         progress_fram = ttk.Labelframe(
             main_frame,
             text="📊 Progreso de Exportación",
@@ -143,11 +159,12 @@ class ExportApp:
         progress_fram.columnconfigure((0,1,2), weight=1)
         
         progress_sections = [
+            ("Table Data","data_table"),
             ("Stored Procedures","procedures"),
             ("Triggers","triggers"),
             ("Events","events"),
             ("Functions","functions"),
-            ("Table Data","data_table")
+
         ]
         
         for idx, (label_text,key) in enumerate(progress_sections):
@@ -167,6 +184,8 @@ class ExportApp:
             }
             self.progress_bars[key]["label"].grid(row=3+idx, column=3, padx=(5, 0))
         
+        self.elapsed_time_label = ttk.Label(progress_fram, text="Duración: 0s", font=("Helvetica", 9, "italic"))
+        self.elapsed_time_label.grid(row=10, column=0, columnspan=4, sticky="w", padx=10, pady=(10, 0))
     def export_action(self):
         db_config = {
             "host": self.origin_host.get(),
@@ -174,13 +193,15 @@ class ExportApp:
             "password": self.origin_password.get(),
             "database": self.origin_database.get()
         }
-        print(f"Exportando con la siguiente configuración: {db_config}")
         
         if not all(db_config.values()):
             messagebox.showerror("Error", "Por favor, completa todos los campos de la base de datos.")
             return
         try:
-            print("Exportando...")
+            self.start_time = time.time()
+            self.start_time_temp = self.start_time
+            self.updateTimer()
+            
             db_config_var = DBConfig(
                 host=db_config["host"],
                 user=db_config["user"],
@@ -195,13 +216,6 @@ class ExportApp:
                 table_data= self.data_table_var.get()
             )
             
-            # progressCallback = {
-            #     "procedures": lambda val: self.update_progress("procedures", val),
-            #     "triggers": lambda val: self.update_progress("triggers", val),
-            #     "events": lambda val: self.update_progress("events", val),
-            #     "functions": lambda val: self.update_progress("functions", val),
-            #     "table": lambda val: self.update_progress("data_table", val)
-            # }
             progressCallbacks = ProgressCallback(
                 procedures=lambda val: self.update_progress("procedures", val),
                 triggers=lambda val: self.update_progress("triggers", val),
@@ -209,17 +223,33 @@ class ExportApp:
                 functions=lambda val: self.update_progress("functions", val),
                 tables=lambda val: self.update_progress("data_table", val)
             )
-            export_base = BaseExporter(
-                db_config=db_config_var,
-                export_options= export_options,
-                output_directory=self.output_directory.get(),
-                progress_callbacks=progressCallbacks
-            )
-            export_base.export_all()
-            messagebox.showinfo("Éxito", "Exportación completada exitosamente.")
+            self.setWidgetsState("disabled")  # Deshabilitar widgets durante la exportación
+            def runExport():
+                try:
+                    export_base = BaseExporter(
+                        db_config=db_config_var,
+                        export_options= export_options,
+                        output_directory=self.output_directory.get(),
+                        progress_callbacks=progressCallbacks
+                    )
+                    export_base.export_all()
+                     # Mostrar mensaje final en el hilo principal
+                    self.root.after(0, lambda: [
+                        self.stopTime(),
+                        self.setWidgetsState("normal"),  # Habilitar widgets nuevamente
+                        messagebox.showinfo("Éxito", "Exportación completada exitosamente.")
+                    ])
+                except Exception as e:
+                    self.root.after(0, lambda: [
+                        self.stopTime(),
+                        self.setWidgetsState("normal"),  # Habilitar widgets nuevamente
+                        messagebox.showerror("Error", f"Error al exportar: {e}")
+                    ])
+            threading.Thread(target=runExport).start()
+            
         except Exception as e:
+            self.setWidgetsState("normal")  # Habilitar widgets nuevamente
             messagebox.showerror("Error", f"Error al exportar: {e}")
-            print(f"Error durante la exportación: {e}")
             return
     def centerWindow(self, width:int, height:int):
         self.root.withdraw()  # Oculta temporalmente
@@ -249,3 +279,46 @@ class ExportApp:
             self.progress_bars[key]["bar"]["value"] = percentage
             self.progress_bars[key]["label"].config(text=f"{percentage}%")
             self.progress_bars[key]["bar"].update_idletasks()
+    
+    def updateTimer(self):
+        if self.start_time is None:
+            return  # Detener temporizador si ya se completó
+
+        elapsed = int(time.time() - self.start_time)
+        hrs, rem = divmod(elapsed, 3600)
+        mins, secs = divmod(rem, 60)
+        tiempo_formateado = f"{hrs:02}:{mins:02}:{secs:02}"
+
+        self.elapsed_time_label.config(text=f"Duración: {tiempo_formateado}")
+        self.root.after(1000, self.updateTimer)  # Actualizar cada segundo
+    
+    def stopTime(self):
+        final_elapsed = int(time.time() - self.start_time_temp)
+        hrs, rem = divmod(final_elapsed, 3600)
+        mins, secs = divmod(rem, 60)
+        tiempo_final = f"{hrs:02}:{mins:02}:{secs:02}"
+        self.elapsed_time_label.config(text=f"Duración final: {tiempo_final}")
+
+        self.start_time = None  # Detener temporizador
+        
+    def setWidgetsState(self,state:str):
+        for child in self.root.winfo_children():
+            self._set_state_recursive(child,state)
+
+    def _set_state_recursive(self,widget,state):
+        try:
+            widget.configure(state=state)
+        except Exception as e:
+            # Algunos widgets no tienen el método configure, como Frame o Label
+            pass
+        for child in widget.winfo_children():
+            self._set_state_recursive(child, state)
+    def onClosing(self):
+        if self.start_time is not None:
+            messagebox.showwarning("Exportación en curso", "No puedes cerrar la ventana mientras se exporta la base de datos.")
+        else:
+            self.root.destroy()
+    
+    def stopExport(self):
+        self.start_time = None
+        self.setWidgetsState("normal")

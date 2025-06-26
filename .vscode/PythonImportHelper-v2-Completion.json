@@ -349,6 +349,24 @@
         "documentation": {}
     },
     {
+        "label": "threading",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "threading",
+        "description": "threading",
+        "detail": "threading",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
+        "documentation": {}
+    },
+    {
         "label": "*",
         "importPath": "ttkbootstrap.constants",
         "description": "ttkbootstrap.constants",
@@ -536,7 +554,7 @@
         "kind": 6,
         "importPath": "gui",
         "description": "gui",
-        "peekOfCode": "class ExportApp:\n    def __init__(self, root: ttk.Window):\n        self.root = root\n        self.root.title(\"Database Export Tool\")\n        self.root.resizable(False, False)\n        self.progress_bars = {}\n        self.structure_table_var = ttk.BooleanVar(value=True)\n        self.data_table_var = ttk.BooleanVar(value=True)\n        self.functions_var = ttk.BooleanVar(value=True)\n        self.triggers_var = ttk.BooleanVar(value=True)",
+        "peekOfCode": "class ExportApp:\n    def __init__(self, root: ttk.Window):\n        self.root = root\n        self.root.protocol(\"WM_DELETE_WINDOW\", self.onClosing)  # Manejar cierre de ventana\n        self.root.title(\"Database Export Tool\")\n        self.root.resizable(False, False)\n        self.progress_bars = {}\n        self.structure_table_var = ttk.BooleanVar(value=True)\n        self.data_table_var = ttk.BooleanVar(value=True)\n        self.functions_var = ttk.BooleanVar(value=True)",
         "detail": "gui",
         "documentation": {}
     },
