@@ -30,6 +30,7 @@ class BaseExporter:
         output_dir = os.path.join("export_sql",f"{db}_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
         os.makedirs(output_dir, exist_ok=True)
         
+        # Seccion 1: Exportar estructura de tablas
         if self.export_options.table_data:
            table_export = DataTableExporter(
                cursor=cursor, 
@@ -39,7 +40,8 @@ class BaseExporter:
             )
            res = table_export.export_database()
            pprint(f"Tablas encontradas: {res}")
-           
+        
+        # Seccion 2: Exportar objetos almacenados
         if self.export_options.store_procedures:
             storeProcedure = StoreProcedureExporter(
                 cursor=cursor, 
@@ -49,6 +51,8 @@ class BaseExporter:
             )
             path_dir = storeProcedure.export()
             print(f"Procedimientos almacenados exportados a: {path_dir}")
+            
+        # Seccion 3: Exportar disparadores (triggers)
         if self.export_options.triggers:
             triggers = TriggerExporter(
                 cursor=cursor, 
@@ -59,6 +63,7 @@ class BaseExporter:
             path_dir = triggers.export()
             print(f"Triggers exportados a: {path_dir}")
         
+        # Seccion 4: Exportar eventos
         if self.export_options.events:
             events_exp = EventExporter(
                 cursor=cursor, 
@@ -69,6 +74,7 @@ class BaseExporter:
             path_dir = events_exp.export()
             print(f"Events exportados a: {path_dir}")
         
+        # Seccion 5: Exportar funciones
         if self.export_options.functions:
             functions_ex = FunctionsExporter(
                 cursor=cursor, 
