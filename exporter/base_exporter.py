@@ -10,6 +10,7 @@ from exporter.functions_exporter import FunctionsExporter
 from exporter.data_table_exporter import DataTableExporter
 from pprint import pprint
 from config.progress_callback import ProgressCallback
+from helpers.utils import joinFilePath, mergeAllFiles, mergeSqlFiles
 class BaseExporter:
     def __init__(self,db_config:DBConfig, export_options:ExportOptions, output_directory:str,progress_callbacks:ProgressCallback):
         self.db_config = db_config
@@ -29,6 +30,13 @@ class BaseExporter:
         
         output_dir = os.path.join("export_sql",f"{db}_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
         os.makedirs(output_dir, exist_ok=True)
+        
+        filesPaths = [
+            joinFilePath(output_dir,'00_stored_procedures.sql'),
+            joinFilePath(output_dir,'00_triggers.sql'),
+            joinFilePath(output_dir,'00_events.sql'),
+            joinFilePath(output_dir,'00_functions.sql'),
+        ]
         
         # Seccion 1: Exportar estructura de tablas
         if self.export_options.table_data:
@@ -50,6 +58,7 @@ class BaseExporter:
                 progress_callback= self.progress_callbacks.procedures
             )
             path_dir = storeProcedure.export()
+            mergeSqlFiles(path_dir,filesPaths[0])
             print(f"Procedimientos almacenados exportados a: {path_dir}")
             
         # Seccion 3: Exportar disparadores (triggers)
@@ -61,6 +70,7 @@ class BaseExporter:
                 progress_callback= self.progress_callbacks.triggers
             )
             path_dir = triggers.export()
+            mergeSqlFiles(path_dir, filesPaths[1])
             print(f"Triggers exportados a: {path_dir}")
         
         # Seccion 4: Exportar eventos
@@ -72,6 +82,7 @@ class BaseExporter:
                 progress_callback= self.progress_callbacks.events
             )
             path_dir = events_exp.export()
+            mergeSqlFiles(path_dir, filesPaths[2])
             print(f"Events exportados a: {path_dir}")
         
         # Seccion 5: Exportar funciones
@@ -83,7 +94,9 @@ class BaseExporter:
                 progress_callback= self.progress_callbacks.functions
             )
             path_dir = functions_ex.export()
+            mergeSqlFiles(path_dir, filesPaths[3])
             print(f"Functions exportados a: {path_dir}")
         
-        
-        print(f"Exportación completada. Archivos guardados en: {output_dir}")
+        #merge files
+        mergeAllFiles(filesPaths, joinFilePath(self.output_directory,f"dump_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sql"))
+        print(f"Exportación completada. Archivos guardados en: {self.output_directory}")
