@@ -6,3 +6,4 @@ class ExportOptions:
     triggers: bool
     events: bool
     functions: bool
+    table_data: bool

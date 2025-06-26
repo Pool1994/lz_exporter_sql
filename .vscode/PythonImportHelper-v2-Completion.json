@@ -1,0 +1,561 @@
+[
+    {
+        "label": "dataclass",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "dataclass",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "dataclass",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "Callable",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Tuple",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "List",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Dict",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "mysql.connector",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "mysql.connector",
+        "description": "mysql.connector",
+        "detail": "mysql.connector",
+        "documentation": {}
+    },
+    {
+        "label": "DBConfig",
+        "importPath": "config.db_config",
+        "description": "config.db_config",
+        "isExtraImport": true,
+        "detail": "config.db_config",
+        "documentation": {}
+    },
+    {
+        "label": "DBConfig",
+        "importPath": "config.db_config",
+        "description": "config.db_config",
+        "isExtraImport": true,
+        "detail": "config.db_config",
+        "documentation": {}
+    },
+    {
+        "label": "ExportOptions",
+        "importPath": "config.export_options",
+        "description": "config.export_options",
+        "isExtraImport": true,
+        "detail": "config.export_options",
+        "documentation": {}
+    },
+    {
+        "label": "ExportOptions",
+        "importPath": "config.export_options",
+        "description": "config.export_options",
+        "isExtraImport": true,
+        "detail": "config.export_options",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "StoreProcedureExporter",
+        "importPath": "exporter.store_procedure_exporter",
+        "description": "exporter.store_procedure_exporter",
+        "isExtraImport": true,
+        "detail": "exporter.store_procedure_exporter",
+        "documentation": {}
+    },
+    {
+        "label": "TriggerExporter",
+        "importPath": "exporter.trigger_exporter",
+        "description": "exporter.trigger_exporter",
+        "isExtraImport": true,
+        "detail": "exporter.trigger_exporter",
+        "documentation": {}
+    },
+    {
+        "label": "EventExporter",
+        "importPath": "exporter.event_exporter",
+        "description": "exporter.event_exporter",
+        "isExtraImport": true,
+        "detail": "exporter.event_exporter",
+        "documentation": {}
+    },
+    {
+        "label": "FunctionsExporter",
+        "importPath": "exporter.functions_exporter",
+        "description": "exporter.functions_exporter",
+        "isExtraImport": true,
+        "detail": "exporter.functions_exporter",
+        "documentation": {}
+    },
+    {
+        "label": "DataTableExporter",
+        "importPath": "exporter.data_table_exporter",
+        "description": "exporter.data_table_exporter",
+        "isExtraImport": true,
+        "detail": "exporter.data_table_exporter",
+        "documentation": {}
+    },
+    {
+        "label": "pprint",
+        "importPath": "pprint",
+        "description": "pprint",
+        "isExtraImport": true,
+        "detail": "pprint",
+        "documentation": {}
+    },
+    {
+        "label": "ProgressCallback",
+        "importPath": "config.progress_callback",
+        "description": "config.progress_callback",
+        "isExtraImport": true,
+        "detail": "config.progress_callback",
+        "documentation": {}
+    },
+    {
+        "label": "ProgressCallback",
+        "importPath": "config.progress_callback",
+        "description": "config.progress_callback",
+        "isExtraImport": true,
+        "detail": "config.progress_callback",
+        "documentation": {}
+    },
+    {
+        "label": "gc",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "gc",
+        "description": "gc",
+        "detail": "gc",
+        "documentation": {}
+    },
+    {
+        "label": "MySQLCursor",
+        "importPath": "mysql.connector.cursor",
+        "description": "mysql.connector.cursor",
+        "isExtraImport": true,
+        "detail": "mysql.connector.cursor",
+        "documentation": {}
+    },
+    {
+        "label": "MySQLCursor",
+        "importPath": "mysql.connector.cursor",
+        "description": "mysql.connector.cursor",
+        "isExtraImport": true,
+        "detail": "mysql.connector.cursor",
+        "documentation": {}
+    },
+    {
+        "label": "MySQLCursor",
+        "importPath": "mysql.connector.cursor",
+        "description": "mysql.connector.cursor",
+        "isExtraImport": true,
+        "detail": "mysql.connector.cursor",
+        "documentation": {}
+    },
+    {
+        "label": "MySQLCursor",
+        "importPath": "mysql.connector.cursor",
+        "description": "mysql.connector.cursor",
+        "isExtraImport": true,
+        "detail": "mysql.connector.cursor",
+        "documentation": {}
+    },
+    {
+        "label": "MySQLCursor",
+        "importPath": "mysql.connector.cursor",
+        "description": "mysql.connector.cursor",
+        "isExtraImport": true,
+        "detail": "mysql.connector.cursor",
+        "documentation": {}
+    },
+    {
+        "label": "cleanDefiner",
+        "importPath": "helpers.utils",
+        "description": "helpers.utils",
+        "isExtraImport": true,
+        "detail": "helpers.utils",
+        "documentation": {}
+    },
+    {
+        "label": "saveSqlFile",
+        "importPath": "helpers.utils",
+        "description": "helpers.utils",
+        "isExtraImport": true,
+        "detail": "helpers.utils",
+        "documentation": {}
+    },
+    {
+        "label": "cleanDefiner",
+        "importPath": "helpers.utils",
+        "description": "helpers.utils",
+        "isExtraImport": true,
+        "detail": "helpers.utils",
+        "documentation": {}
+    },
+    {
+        "label": "saveSqlFile",
+        "importPath": "helpers.utils",
+        "description": "helpers.utils",
+        "isExtraImport": true,
+        "detail": "helpers.utils",
+        "documentation": {}
+    },
+    {
+        "label": "cleanDefiner",
+        "importPath": "helpers.utils",
+        "description": "helpers.utils",
+        "isExtraImport": true,
+        "detail": "helpers.utils",
+        "documentation": {}
+    },
+    {
+        "label": "saveSqlFile",
+        "importPath": "helpers.utils",
+        "description": "helpers.utils",
+        "isExtraImport": true,
+        "detail": "helpers.utils",
+        "documentation": {}
+    },
+    {
+        "label": "cleanDefiner",
+        "importPath": "helpers.utils",
+        "description": "helpers.utils",
+        "isExtraImport": true,
+        "detail": "helpers.utils",
+        "documentation": {}
+    },
+    {
+        "label": "saveSqlFile",
+        "importPath": "helpers.utils",
+        "description": "helpers.utils",
+        "isExtraImport": true,
+        "detail": "helpers.utils",
+        "documentation": {}
+    },
+    {
+        "label": "cleanDefiner",
+        "importPath": "helpers.utils",
+        "description": "helpers.utils",
+        "isExtraImport": true,
+        "detail": "helpers.utils",
+        "documentation": {}
+    },
+    {
+        "label": "saveSqlFile",
+        "importPath": "helpers.utils",
+        "description": "helpers.utils",
+        "isExtraImport": true,
+        "detail": "helpers.utils",
+        "documentation": {}
+    },
+    {
+        "label": "defaultdict",
+        "importPath": "collections",
+        "description": "collections",
+        "isExtraImport": true,
+        "detail": "collections",
+        "documentation": {}
+    },
+    {
+        "label": "re",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "re",
+        "description": "re",
+        "detail": "re",
+        "documentation": {}
+    },
+    {
+        "label": "ttkbootstrap",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "ttkbootstrap",
+        "description": "ttkbootstrap",
+        "detail": "ttkbootstrap",
+        "documentation": {}
+    },
+    {
+        "label": "Window",
+        "importPath": "ttkbootstrap",
+        "description": "ttkbootstrap",
+        "isExtraImport": true,
+        "detail": "ttkbootstrap",
+        "documentation": {}
+    },
+    {
+        "label": "ExportApp",
+        "importPath": "gui",
+        "description": "gui",
+        "isExtraImport": true,
+        "detail": "gui",
+        "documentation": {}
+    },
+    {
+        "label": "*",
+        "importPath": "ttkbootstrap.constants",
+        "description": "ttkbootstrap.constants",
+        "isExtraImport": true,
+        "detail": "ttkbootstrap.constants",
+        "documentation": {}
+    },
+    {
+        "label": "*",
+        "importPath": "ttkbootstrap.constants",
+        "description": "ttkbootstrap.constants",
+        "isExtraImport": true,
+        "detail": "ttkbootstrap.constants",
+        "documentation": {}
+    },
+    {
+        "label": "tkinter",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
+        "label": "messagebox",
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "isExtraImport": true,
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
+        "label": "filedialog",
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "isExtraImport": true,
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
+        "label": "messagebox",
+        "importPath": "tkinter",
+        "description": "tkinter",
+        "isExtraImport": true,
+        "detail": "tkinter",
+        "documentation": {}
+    },
+    {
+        "label": "BaseExporter",
+        "importPath": "exporter.base_exporter",
+        "description": "exporter.base_exporter",
+        "isExtraImport": true,
+        "detail": "exporter.base_exporter",
+        "documentation": {}
+    },
+    {
+        "label": "subprocess",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "subprocess",
+        "description": "subprocess",
+        "detail": "subprocess",
+        "documentation": {}
+    },
+    {
+        "label": "platform",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "platform",
+        "description": "platform",
+        "detail": "platform",
+        "documentation": {}
+    },
+    {
+        "label": "DBConfig",
+        "kind": 6,
+        "importPath": "config.db_config",
+        "description": "config.db_config",
+        "peekOfCode": "class DBConfig:\n    host:str\n    user:str\n    password:str\n    database:str",
+        "detail": "config.db_config",
+        "documentation": {}
+    },
+    {
+        "label": "ExportOptions",
+        "kind": 6,
+        "importPath": "config.export_options",
+        "description": "config.export_options",
+        "peekOfCode": "class ExportOptions:\n    store_procedures: bool\n    triggers: bool\n    events: bool\n    functions: bool\n    table_data: bool",
+        "detail": "config.export_options",
+        "documentation": {}
+    },
+    {
+        "label": "ProgressCallback",
+        "kind": 6,
+        "importPath": "config.progress_callback",
+        "description": "config.progress_callback",
+        "peekOfCode": "class ProgressCallback:\n    procedures: Callable[[Tuple[int,int]], None]\n    triggers: Callable[[Tuple[int,int]], None]\n    events: Callable[[Tuple[int,int]], None]\n    functions: Callable[[Tuple[int,int]], None]\n    tables: Callable[[Tuple[int,int]], None]",
+        "detail": "config.progress_callback",
+        "documentation": {}
+    },
+    {
+        "label": "BaseExporter",
+        "kind": 6,
+        "importPath": "exporter.base_exporter",
+        "description": "exporter.base_exporter",
+        "peekOfCode": "class BaseExporter:\n    def __init__(self,db_config:DBConfig, export_options:ExportOptions, output_directory:str,progress_callbacks:ProgressCallback):\n        self.db_config = db_config\n        self.export_options = export_options\n        self.output_directory = output_directory\n        self.progress_callbacks = progress_callbacks\n    def export_all(self):\n        conn = mysql.connector.connect(\n            host= self.db_config.host,\n            user= self.db_config.user,",
+        "detail": "exporter.base_exporter",
+        "documentation": {}
+    },
+    {
+        "label": "DataTableExporter",
+        "kind": 6,
+        "importPath": "exporter.data_table_exporter",
+        "description": "exporter.data_table_exporter",
+        "peekOfCode": "class DataTableExporter:\n    def __init__(self, cursor: MySQLCursor, dbName: str, base_folder: str, progress_callback:None):\n        self.cursor = cursor\n        self.dbName = dbName\n        self.path_dir = os.path.join(base_folder, \"tablas\")\n        os.makedirs(self.path_dir, exist_ok=True)\n        self.progress_callback = progress_callback\n    def getTableNames(self):\n        self.cursor.execute(\"SHOW FULL TABLES WHERE Table_type = 'BASE TABLE'\")\n        rows = self.cursor.fetchall()",
+        "detail": "exporter.data_table_exporter",
+        "documentation": {}
+    },
+    {
+        "label": "EventExporter",
+        "kind": 6,
+        "importPath": "exporter.event_exporter",
+        "description": "exporter.event_exporter",
+        "peekOfCode": "class EventExporter:\n    def __init__(self,cursor:MySQLCursor,dbName:str,base_folder:str, progress_callback:None):\n        self.cursor = cursor\n        self.dbName = dbName\n        self.path_dir = os.path.join(base_folder, \"events\")\n        self.progress_callback = progress_callback\n    def export(self):\n        self.cursor.execute(\n            \"SELECT EVENT_NAME FROM information_schema.EVENTS WHERE EVENT_SCHEMA = %s\",\n            (self.dbName,)",
+        "detail": "exporter.event_exporter",
+        "documentation": {}
+    },
+    {
+        "label": "FunctionsExporter",
+        "kind": 6,
+        "importPath": "exporter.functions_exporter",
+        "description": "exporter.functions_exporter",
+        "peekOfCode": "class FunctionsExporter:\n    def __init__(self,cursor:MySQLCursor,dbName:str,base_folder:str, progress_callback:None):\n        self.cursor = cursor\n        self.dbName = dbName\n        self.path_dir = os.path.join(base_folder, \"functions\")\n        self.progress_callback = progress_callback\n    def export(self):\n        self.cursor.execute(\n            \"SELECT SPECIFIC_NAME FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = %s AND ROUTINE_TYPE = 'FUNCTION'\",\n            (self.dbName,)",
+        "detail": "exporter.functions_exporter",
+        "documentation": {}
+    },
+    {
+        "label": "StoreProcedureExporter",
+        "kind": 6,
+        "importPath": "exporter.store_procedure_exporter",
+        "description": "exporter.store_procedure_exporter",
+        "peekOfCode": "class StoreProcedureExporter:\n    def __init__(self,cursor:MySQLCursor,dbName:str,base_folder:str,progress_callback:None):\n        self.cursor = cursor\n        self.dbName = dbName\n        self.path_dir = os.path.join(base_folder, \"stored_procedures\")\n        self.progress_callback = progress_callback\n    def export(self):\n        self.cursor.execute(\n            \"SELECT SPECIFIC_NAME FROM information_schema.routines WHERE ROUTINE_SCHEMA = %s AND ROUTINE_TYPE = 'PROCEDURE'\",\n            (self.dbName,)",
+        "detail": "exporter.store_procedure_exporter",
+        "documentation": {}
+    },
+    {
+        "label": "TriggerExporter",
+        "kind": 6,
+        "importPath": "exporter.trigger_exporter",
+        "description": "exporter.trigger_exporter",
+        "peekOfCode": "class TriggerExporter:\n    def __init__(self,cursor:MySQLCursor,dbName:str,base_folder:str, progress_callback:None):\n        self.cursor = cursor\n        self.dbName = dbName\n        self.path_dir = os.path.join(base_folder, \"triggers\")\n        self.progress_callback = progress_callback\n    def export(self):\n        self.cursor.execute(\n            \"SELECT TRIGGER_NAME FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA = %s\",\n            (self.dbName,)",
+        "detail": "exporter.trigger_exporter",
+        "documentation": {}
+    },
+    {
+        "label": "cleanDefiner",
+        "kind": 2,
+        "importPath": "helpers.utils",
+        "description": "helpers.utils",
+        "peekOfCode": "def cleanDefiner(create_stmt:str) -> str:\n    \"\"\"\n    Limpia el DEFINER del CREATE y agrega delimitadores para bloque SQL.\n    \"\"\"\n    # Eliminar DEFINER usando expresión regular\n    stmt_without_definer = re.sub(r\"DEFINER=`[^`]+`@`[^`]+`\\s+\", \"\", create_stmt)\n    # Envolver con delimitadores\n    final_stmt = f\"DELIMITER $$\\n\\n{stmt_without_definer} $$\\n\\nDELIMITER ;\\n\"\n    return final_stmt\ndef saveSqlFile(folder,name,sql):",
+        "detail": "helpers.utils",
+        "documentation": {}
+    },
+    {
+        "label": "saveSqlFile",
+        "kind": 2,
+        "importPath": "helpers.utils",
+        "description": "helpers.utils",
+        "peekOfCode": "def saveSqlFile(folder,name,sql):\n    os.makedirs(folder, exist_ok=True)\n    path = os.path.join(folder,f\"{name}.sql\")\n    with open(path, \"w\", encoding=\"utf-8\") as file:\n        file.write(sql+\"\\n\")\n    return path",
+        "detail": "helpers.utils",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def main():\n    root = Window(themename=\"minty\")\n    app = ExportApp(root)\n    root.mainloop()\nif __name__ == \"__main__\":\n    main()",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "ExportApp",
+        "kind": 6,
+        "importPath": "gui",
+        "description": "gui",
+        "peekOfCode": "class ExportApp:\n    def __init__(self, root: ttk.Window):\n        self.root = root\n        self.root.title(\"Database Export Tool\")\n        self.root.resizable(False, False)\n        self.progress_bars = {}\n        self.structure_table_var = ttk.BooleanVar(value=True)\n        self.data_table_var = ttk.BooleanVar(value=True)\n        self.functions_var = ttk.BooleanVar(value=True)\n        self.triggers_var = ttk.BooleanVar(value=True)",
+        "detail": "gui",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def main():\n    try:\n        root = ttk.Window(themename=\"minty\")\n        root.title(\"Database Export Tool\")\n        root.geometry(\"900x900\")\n        root.resizable(False, False)\n        #titulo principal\n        title = ttk.Label(root, text=\"🗃️ Database Export Tool\", font=(\"Helvetica\", 20, \"bold\"),bootstyle=\"default\")\n        title.pack(pady=10)\n        subtitle = ttk.Label(root, text=\"Exporta datos, estructura y objetos de base de datos de forma segura entre diferentes servidores\", font=(\"Helvetica\", 10),bootstyle=\"secondary\")",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "export_selected",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def export_selected():\n    print(\"Exporting selected items...\")\nif __name__ == \"__main__\":\n    main()",
+        "detail": "main",
+        "documentation": {}
+    }
+]

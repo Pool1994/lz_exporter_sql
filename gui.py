@@ -6,12 +6,13 @@ from tkinter import filedialog
 from exporter.base_exporter import BaseExporter
 from config.db_config import DBConfig
 from config.export_options import ExportOptions
+from config.progress_callback import ProgressCallback
 class ExportApp:
     def __init__(self, root: ttk.Window):
         self.root = root
         self.root.title("Database Export Tool")
         self.root.resizable(False, False)
-      
+        self.progress_bars = {}
         
         
         self.structure_table_var = ttk.BooleanVar(value=True)
@@ -103,7 +104,7 @@ class ExportApp:
         estructura_frame.grid(row=1, column=0, sticky="nsew", padx=10)
 
         ttk.Label(estructura_frame, text="🗄️ Estructura y Datos", font=("Helvetica", 10, "bold")).pack(anchor="w", pady=(0, 5))
-        ttk.Checkbutton(estructura_frame, text="Estructura de tablas", bootstyle="success",variable=self.structure_table_var).pack(anchor="w", pady=2)
+        ttk.Checkbutton(estructura_frame, text="Estructura de tablas", bootstyle="success",variable=self.data_table_var).pack(anchor="w", pady=2)
         ttk.Checkbutton(estructura_frame, text="Datos de tablas", bootstyle="success",variable=self.data_table_var).pack(anchor="w", pady=2)
 
         # === Columna 2: Objetos de Base de Datos ===
@@ -131,6 +132,41 @@ class ExportApp:
             command=self.export_action  # tu función de exportación
         )
         export_button.grid(row=2, column=0, columnspan=3, pady=15)
+        
+        progress_fram = ttk.Labelframe(
+            main_frame,
+            text="📊 Progreso de Exportación",
+            bootstyle="primary",
+            padding=10
+        )
+        progress_fram.grid(row=3, column=0, columnspan=2, pady=(0, 10), padx=10, sticky="nsew")
+        progress_fram.columnconfigure((0,1,2), weight=1)
+        
+        progress_sections = [
+            ("Stored Procedures","procedures"),
+            ("Triggers","triggers"),
+            ("Events","events"),
+            ("Functions","functions"),
+            ("Table Data","data_table")
+        ]
+        
+        for idx, (label_text,key) in enumerate(progress_sections):
+            label = ttk.Label(progress_fram,text=label_text, font=("Helvetica",9))
+            label.grid(row=3+idx,column=0,sticky="w", padx=(10,0))
+            
+            progress = ttk.Progressbar(
+                progress_fram,
+                orient="horizontal",
+                length=300,
+                mode="determinate",
+            )
+            progress.grid(row=3+idx,column=1, columnspan=2,padx=10,sticky="ew")
+            self.progress_bars[key] = {
+                "bar": progress,
+                "label": ttk.Label(progress_fram, text="0%")
+            }
+            self.progress_bars[key]["label"].grid(row=3+idx, column=3, padx=(5, 0))
+        
     def export_action(self):
         db_config = {
             "host": self.origin_host.get(),
@@ -155,18 +191,35 @@ class ExportApp:
                 store_procedures=self.stored_procedures_var.get(),
                 triggers=self.triggers_var.get(),
                 events=self.events_var.get(),
-                functions=self.functions_var.get()
+                functions=self.functions_var.get(),
+                table_data= self.data_table_var.get()
             )
             
+            # progressCallback = {
+            #     "procedures": lambda val: self.update_progress("procedures", val),
+            #     "triggers": lambda val: self.update_progress("triggers", val),
+            #     "events": lambda val: self.update_progress("events", val),
+            #     "functions": lambda val: self.update_progress("functions", val),
+            #     "table": lambda val: self.update_progress("data_table", val)
+            # }
+            progressCallbacks = ProgressCallback(
+                procedures=lambda val: self.update_progress("procedures", val),
+                triggers=lambda val: self.update_progress("triggers", val),
+                events=lambda val: self.update_progress("events", val),
+                functions=lambda val: self.update_progress("functions", val),
+                tables=lambda val: self.update_progress("data_table", val)
+            )
             export_base = BaseExporter(
                 db_config=db_config_var,
                 export_options= export_options,
-                output_directory=self.output_directory.get()
+                output_directory=self.output_directory.get(),
+                progress_callbacks=progressCallbacks
             )
             export_base.export_all()
             messagebox.showinfo("Éxito", "Exportación completada exitosamente.")
         except Exception as e:
             messagebox.showerror("Error", f"Error al exportar: {e}")
+            print(f"Error durante la exportación: {e}")
             return
     def centerWindow(self, width:int, height:int):
         self.root.withdraw()  # Oculta temporalmente
@@ -188,3 +241,11 @@ class ExportApp:
             self.output_directory.set(selectPath)
         else:
             messagebox.showwarning("Advertencia", "No se seleccionó ninguna ruta de exportación.")
+    def update_progress(self, key: str, value: tuple):
+        if key in self.progress_bars:
+            current, total = value
+            percentage = int((current / total) * 100) if total else 0
+            
+            self.progress_bars[key]["bar"]["value"] = percentage
+            self.progress_bars[key]["label"].config(text=f"{percentage}%")
+            self.progress_bars[key]["bar"].update_idletasks()

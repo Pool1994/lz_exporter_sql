@@ -1,12 +1,14 @@
 import os
+import gc
 from mysql.connector.cursor import MySQLCursor
 from helpers.utils import cleanDefiner, saveSqlFile
 
 class EventExporter:
-    def __init__(self,cursor:MySQLCursor,dbName:str,base_folder:str):
+    def __init__(self,cursor:MySQLCursor,dbName:str,base_folder:str, progress_callback:None):
         self.cursor = cursor
         self.dbName = dbName
         self.path_dir = os.path.join(base_folder, "events")
+        self.progress_callback = progress_callback
     
     def export(self):
         self.cursor.execute(
@@ -14,7 +16,10 @@ class EventExporter:
             (self.dbName,)
         )
         
-        for row in self.cursor.fetchall():
+        events = self.cursor.fetchall()
+        total = len(events)
+        print(f"Total eventos encontrados: {total}")
+        for i,row in enumerate(events,start=1):
             name = row['EVENT_NAME']
             try:
                 self.cursor.execute(f"SHOW CREATE EVENT `{name}`")
@@ -26,4 +31,8 @@ class EventExporter:
             except Exception as e:
                 print(f"Error al ejecutar SHOW CREATE EVENT para {name}: {e}")
                 continue
+            if self.progress_callback:
+                self.progress_callback((i, total))
+        del events
+        gc.collect()
         return self.path_dir
