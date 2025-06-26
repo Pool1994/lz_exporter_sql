@@ -16,7 +16,7 @@ class StoreProcedureExporter:
         )
         procedures = self.cursor.fetchall()
         total = len(procedures)
-        print(f"Total procedimientos almacenados encontrados: {total}")
+        
         for i,row in enumerate(procedures,start=1):
             name = row['SPECIFIC_NAME']
             try:

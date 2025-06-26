@@ -16,7 +16,6 @@ class FunctionsExporter:
         )
         functions = self.cursor.fetchall()
         total = len(functions)
-        print(f"Total funciones encontradas: {total}")
         for i,row in enumerate(functions,start=1):
             name = row['SPECIFIC_NAME']
             try:

@@ -17,7 +17,6 @@ class TriggerExporter:
         )
         triggers = self.cursor.fetchall()
         total = len(triggers)
-        print(f"Total triggers encontrados: {total}")
         for i,row in enumerate(triggers,start=1):
             name = row['TRIGGER_NAME']
             try:

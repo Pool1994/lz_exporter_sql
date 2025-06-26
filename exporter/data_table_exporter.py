@@ -15,7 +15,6 @@ class DataTableExporter:
         self.cursor.execute("SHOW FULL TABLES WHERE Table_type = 'BASE TABLE'")
         rows = self.cursor.fetchall()
         if not rows:
-            print("No se encontraron tablas en la base de datos.")
             return []
         table_column_key = list(rows[0].keys())[0]
         return [row[table_column_key] for row in rows]

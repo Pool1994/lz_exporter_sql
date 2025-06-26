@@ -23,7 +23,6 @@ def saveSqlFile(folder:str,name:str,sql:str) -> str:
 def mergeSqlFiles(directory:str,outputFile:str) -> str:
     
     if not os.path.exists(directory):
-        print(f"Directory {directory} does not exist")
         return
     files_merged = 0
     with open(outputFile,'w', encoding="utf-8") as file:
@@ -38,13 +37,11 @@ def mergeSqlFiles(directory:str,outputFile:str) -> str:
                 files_merged += 1
     if files_merged == 0:
         print(f"[INFO] No se encontraron archivos SQL en '{directory}' para fusionar.")
-    else:
-        print(f"[OK] {files_merged} archivo(s) SQL fusionado(s) en '{outputFile}'. Los archivos originales fueron eliminados.")
-    
+
     # Eliminar directorio si está vacío
     if not os.listdir(directory):
         os.rmdir(directory)
-        print(f"[LIMPIEZA] Directorio vacío eliminado: {directory}")
+
 def joinFilePath(directory:str,fileName:str) -> str:
     return os.path.join(directory,fileName)
 
@@ -58,14 +55,9 @@ def mergeAllFiles(files:list[str], destinationFile:str):
                     outfile.write("\n\n")
                 # eliminar archivo original
                 os.remove(filePath)
-                print(f"[FINAL] Archivo {os.path.basename(filePath)} fusionado exitosamente.")
             else:
                 print(f"[ERROR] Archivo {os.path.basename(filePath)} no existe.")
-                
-        print(f"[FINAL] Archivo combinado creado en: {destinationFile}")
-    
     # Eliminar directorio si está vacío
     folder = os.path.dirname(files[0])
     if os.path.exists(folder) and not os.listdir(folder):
         os.rmdir(folder)
-        print(f"[LIMPIEZA] Directorio vacío eliminado: {folder}")

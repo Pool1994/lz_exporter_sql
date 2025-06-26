@@ -18,7 +18,7 @@ class EventExporter:
         
         events = self.cursor.fetchall()
         total = len(events)
-        print(f"Total eventos encontrados: {total}")
+        
         for i,row in enumerate(events,start=1):
             name = row['EVENT_NAME']
             try:
@@ -29,7 +29,6 @@ class EventExporter:
                     print(f"Exportando evento: {name}")
                     saveSqlFile(self.path_dir, name, sql)
             except Exception as e:
-                print(f"Error al ejecutar SHOW CREATE EVENT para {name}: {e}")
                 continue
             if self.progress_callback:
                 self.progress_callback((i, total))

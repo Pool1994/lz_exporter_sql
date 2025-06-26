@@ -50,8 +50,7 @@ class BaseExporter:
             )
            path_dir = table_export.export_database()
            mergeSqlFiles(path_dir,filesPaths[0])
-           pprint(f"Tablas encontradas: {path_dir}")
-        
+    
         # Seccion 2: Exportar objetos almacenados
         if self.export_options.store_procedures:
             storeProcedure = StoreProcedureExporter(
@@ -62,8 +61,7 @@ class BaseExporter:
             )
             path_dir = storeProcedure.export()
             mergeSqlFiles(path_dir,filesPaths[1])
-            print(f"Procedimientos almacenados exportados a: {path_dir}")
-            
+         
         # Seccion 3: Exportar disparadores (triggers)
         if self.export_options.triggers:
             triggers = TriggerExporter(
@@ -74,8 +72,7 @@ class BaseExporter:
             )
             path_dir = triggers.export()
             mergeSqlFiles(path_dir, filesPaths[2])
-            print(f"Triggers exportados a: {path_dir}")
-        
+           
         # Seccion 4: Exportar eventos
         if self.export_options.events:
             events_exp = EventExporter(
@@ -86,8 +83,7 @@ class BaseExporter:
             )
             path_dir = events_exp.export()
             mergeSqlFiles(path_dir, filesPaths[3])
-            print(f"Events exportados a: {path_dir}")
-        
+           
         # Seccion 5: Exportar funciones
         if self.export_options.functions:
             functions_ex = FunctionsExporter(
@@ -98,8 +94,7 @@ class BaseExporter:
             )
             path_dir = functions_ex.export()
             mergeSqlFiles(path_dir, filesPaths[4])
-            print(f"Functions exportados a: {path_dir}")
-        
+            
         #merge files
         mergeAllFiles(filesPaths, joinFilePath(self.output_directory,f"dump_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sql"))
-        print(f"Exportación completada. Archivos guardados en: {self.output_directory}")
+        
