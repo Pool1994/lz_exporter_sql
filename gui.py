@@ -46,7 +46,7 @@ class ExportApp:
     def createWidgets(self):
         title = ttk.Label(self.root, text="🗃️ Database Export Tool", font=("Helvetica", 20, "bold"),bootstyle="default")
         title.pack(pady=10)
-        subtitle = ttk.Label(self.root, text="Exporta datos, estructura y objetos de base de datos de forma segura entre diferentes servidores", font=("Helvetica", 10),bootstyle="secondary")
+        subtitle = ttk.Label(self.root, text="Exporta datos, estructura y objetos de base de datos", font=("Helvetica", 10),bootstyle="secondary")
         subtitle.pack()
         
          # === Contenedor principal ===
