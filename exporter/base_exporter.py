@@ -1,5 +1,5 @@
 import os
-import mysql.connector
+import pymysql as mysql
 from config.db_config import DBConfig
 from config.export_options import ExportOptions
 from datetime import datetime
@@ -11,6 +11,7 @@ from exporter.data_table_exporter import DataTableExporter
 from pprint import pprint
 from config.progress_callback import ProgressCallback
 from helpers.utils import joinFilePath, mergeAllFiles, mergeSqlFiles
+from pymysql.cursors import DictCursor
 class BaseExporter:
     def __init__(self,db_config:DBConfig, export_options:ExportOptions, output_directory:str,progress_callbacks:ProgressCallback):
         self.db_config = db_config
@@ -19,13 +20,13 @@ class BaseExporter:
         self.progress_callbacks = progress_callbacks
     
     def export_all(self):
-        conn = mysql.connector.connect(
+        conn = mysql.connect(
             host= self.db_config.host,
             user= self.db_config.user,
             password= self.db_config.password,
             database= self.db_config.database
         )
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor(cursor=DictCursor)
         db=self.db_config.database
         
         output_dir = os.path.join("export_sql",f"{db}_{datetime.now().strftime('%Y%m%d_%H%M%S')}")

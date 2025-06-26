@@ -1,9 +1,9 @@
 import os
 import gc
-from mysql.connector.cursor import MySQLCursor
+from pymysql.cursors import DictCursor
 from helpers.utils import cleanDefiner, saveSqlFile
 class StoreProcedureExporter:
-    def __init__(self,cursor:MySQLCursor,dbName:str,base_folder:str,progress_callback: tuple[int,int]):
+    def __init__(self,cursor:DictCursor,dbName:str,base_folder:str,progress_callback: tuple[int,int]):
         self.cursor = cursor
         self.dbName = dbName
         self.path_dir = os.path.join(base_folder, "stored_procedures")

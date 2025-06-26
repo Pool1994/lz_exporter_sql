@@ -4,3 +4,6 @@
 /exporter/__pycache__
 /.vscode
 /config/__pycache__
+/build
+/dist
+/*.spec

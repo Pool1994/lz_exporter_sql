@@ -1,10 +1,10 @@
 import os
 import gc
-from mysql.connector.abstracts import MySQLCursorAbstract
+from pymysql.cursors import DictCursor
 
 
 class DataTableExporter:
-    def __init__(self, cursor: MySQLCursorAbstract, dbName: str, base_folder: str, progress_callback: tuple[int,int]):
+    def __init__(self, cursor: DictCursor, dbName: str, base_folder: str, progress_callback: tuple[int,int]):
         self.cursor = cursor
         self.dbName = dbName
         self.path_dir = os.path.join(base_folder, "tablas")

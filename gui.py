@@ -242,11 +242,12 @@ class ExportApp:
                         messagebox.showinfo("Éxito", "Exportación completada exitosamente.")
                     ])
                 except Exception as e:
+                    error_msg = str(e)
                     self.root.after(0, lambda: [
                         self.stopTime(),
                         self.setWidgetsState("normal"),  # Habilitar widgets nuevamente
                         self.export_path.config(state="readonly"),
-                        messagebox.showerror("Error", f"Error al exportar: {e}")
+                        messagebox.showerror("Error", f"Error al exportar: {error_msg}")
                     ])
             threading.Thread(target=runExport).start()
             
