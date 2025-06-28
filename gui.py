@@ -9,6 +9,7 @@ from exporter.base_exporter import BaseExporter
 from config.db_config import DBConfig
 from config.export_options import ExportOptions
 from config.progress_callback import ProgressCallback
+from exporter.list_databases import get_list_database
 class ExportApp:
     def __init__(self, root: ttk.Window):
         self.root = root
@@ -32,18 +33,19 @@ class ExportApp:
         # o se pueden cargar desde un archivo de configuración
         # o variables de entorno si se desea mayor flexibilidad.
         # Aquí se usan valores por defecto para simplificar el ejemplo.
-        self.host = ttk.StringVar(value="127.0.0.1")
-        self.user = ttk.StringVar(value="root")
-        self.password = ttk.StringVar(value="password")
-        self.database = ttk.StringVar(value="amgsoft2025")
+        self.host = ttk.StringVar()
+        self.user = ttk.StringVar()
+        self.password = ttk.StringVar()
+        self.database = ttk.StringVar()
         
 
         self.start_time = None
         self.elapsed_time_label = None
         self.start_time_temp = None
         
-        self.createWidgets()
-    def createWidgets(self):
+        self.create_widgets()
+    def create_widgets(self):
+        style = ttk.Style()
         title = ttk.Label(self.root, text="🗃️ Herramienta de Exportación de Bases de Datos", font=("Helvetica", 20, "bold"),bootstyle="default")
         title.pack(pady=10)
         subtitle = ttk.Label(self.root, text="Exporta tablas, funciones y objetos de tu base de datos MySQL", font=("Helvetica", 10),bootstyle="secondary")
@@ -59,36 +61,43 @@ class ExportApp:
         origin_frame.grid(row=0,column=0,padx=10,pady=10,sticky="nsew")
         origin_frame.columnconfigure(0, weight=1)
         
-        self.origin_host = ttk.Entry(origin_frame,textvariable=self.host)
+        style.map("TCombobox", selectbackground=[('readonly', 'fieldbackground')])  # El fondo del texto seleccionado será blanco)
+        self.origin_host = ttk.Entry(origin_frame,textvariable=self.host, )
         self.origin_user = ttk.Entry(origin_frame, textvariable= self.user)
         self.origin_password = ttk.Entry(origin_frame, show="*", textvariable=self.password)
-        self.origin_database = ttk.Entry(origin_frame, textvariable= self.database)
+        self.origin_database = ttk.Combobox(origin_frame, textvariable= self.database,state="readonly")
         self.export_path = ttk.Entry(origin_frame,textvariable=self.output_directory,state="readonly")
         #ORIgEN HOST
-        ttk.Label(origin_frame,text="Servidor (Host/IP):").grid(row=0,column=0,sticky="w", columnspan=2)
-        self.origin_host.grid(row=1, column=0, sticky="ew")
+        ttk.Label(origin_frame,text="Servidor (Host/IP):",font=("Helvetica","9","bold")).grid(row=0,column=0,sticky="w", columnspan=2,)
+        self.origin_host.grid(row=1, column=0, sticky="ew", pady=(0,8))
         
         #USER
-        ttk.Label(origin_frame, text="Usuario de MySQL:").grid(row=2, column=0, sticky="w")
-        self.origin_user.grid(row=3,column=0,sticky="w")
+        ttk.Label(origin_frame, text="Usuario de MySQL:",font=("Helvetica","9","bold")).grid(row=2, column=0, sticky="w")
+        self.origin_user.grid(row=3,column=0,sticky="w", pady=(0,8))
         
         #PASSWORD
-        ttk.Label(origin_frame, text="Contraseña de MySQL:").grid(row=4, column=0, sticky="w")
-        self.origin_password.grid(row=5, column=0, sticky="w")
+        ttk.Label(origin_frame, text="Contraseña de MySQL:", font=("Helvetica","9","bold")).grid(row=4, column=0, sticky="w")
+        self.origin_password.grid(row=5, column=0, sticky="w", pady=(0,8))
         
         #DATABASE
-        ttk.Label(origin_frame, text="Nombre de la Base de Datos:").grid(row=6, column=0, sticky="w")
-        self.origin_database.grid(row=7, column=0, sticky="w")
+        ttk.Label(origin_frame, text="Nombre de la Base de Datos:", font=("Helvetica","9","bold")).grid(row=6, column=0, sticky="w")
+        self.origin_database.grid(row=7, column=0, sticky="w", pady=(0,8))
         
         #PATH
-        ttk.Label(origin_frame, text="Carpeta de destino para la exportación:").grid(row=8, column=0, sticky="w")
+        ttk.Label(origin_frame, text="Carpeta de destino para la exportación:", font=("Helvetica","9","bold")).grid(row=8, column=0, sticky="w")
         self.export_path.grid(row=9, column=0, sticky="ew",pady=2)
         ttk.Button(origin_frame,text="Elegir Carpeta", bootstyle="secondary",command=self.selectOutputPath).grid(row=9,column=1,sticky="e",pady=(0, 5))
+        
+        #configurar los enventos para actualizar la lista de bases de datos
+        self.host.trace_add("write",lambda *args: self.update_combobox_database())
+        self.user.trace_add("write",lambda *args: self.update_combobox_database())
+        self.password.trace_add("write",lambda *args: self.update_combobox_database())
+        
         # Frame opciones de exportación
         export_options_frame = ttk.Labelframe(
             main_frame,
             text="⚙️ Qué deseas exportar?",
-            bootstyle="primary",
+            bootstyle="info",
             padding=10
         )
         export_options_frame.grid(row=1, column=0, columnspan=2, pady=(0, 10), padx=10, sticky="nsew")
@@ -110,8 +119,8 @@ class ExportApp:
         estructura_frame.grid(row=1, column=0, sticky="nsew", padx=10)
 
         ttk.Label(estructura_frame, text="🗄️ Estructura y Datos", font=("Helvetica", 10, "bold")).pack(anchor="w", pady=(0, 5))
-        ttk.Checkbutton(estructura_frame, text="Solo estructura de tablas", bootstyle="success",variable=self.data_table_var).pack(anchor="w", pady=2)
-        ttk.Checkbutton(estructura_frame, text="Solo datos de tablas", bootstyle="success",variable=self.data_table_var).pack(anchor="w", pady=2)
+        ttk.Checkbutton(estructura_frame, text="Solo estructura de tablas",variable=self.data_table_var).pack(anchor="w", pady=2)
+        ttk.Checkbutton(estructura_frame, text="Solo datos de tablas",variable=self.data_table_var).pack(anchor="w", pady=2)
 
         # === Columna 2: Objetos de Base de Datos ===
         objetos_frame = ttk.Frame(export_options_frame)
@@ -151,7 +160,7 @@ class ExportApp:
         progress_fram = ttk.Labelframe(
             main_frame,
             text="📊 Estado del Proceso de Exportación",
-            bootstyle="primary",
+            bootstyle="info",
             padding=10
         )
         progress_fram.grid(row=3, column=0, columnspan=2, pady=(0, 10), padx=10, sticky="nsew")
@@ -186,10 +195,10 @@ class ExportApp:
         self.elapsed_time_label.grid(row=10, column=0, columnspan=4, sticky="w", padx=10, pady=(10, 0))
     def export_action(self):
         db_config = {
-            "host": self.origin_host.get(),
-            "user": self.origin_user.get(),
-            "password": self.origin_password.get(),
-            "database": self.origin_database.get()
+            "host": self.host.get(),
+            "user": self.user.get(),
+            "password": self.password.get(),
+            "database": self.database.get()
         }
         
         if not all(db_config.values()):
@@ -227,6 +236,12 @@ class ExportApp:
             self.setWidgetsState("disabled")  # Deshabilitar widgets durante la exportación
             def runExport():
                 try:
+                    self.update_progress("data_table", (0,0))
+                    self.update_progress("procedures", (0,0))
+                    self.update_progress("triggers", (0,0))
+                    self.update_progress("events", (0,0))
+                    self.update_progress("functions", (0,0))
+                    
                     export_base = BaseExporter(
                         db_config=db_config_var,
                         export_options= export_options,
@@ -239,14 +254,17 @@ class ExportApp:
                         self.stopTime(),
                         self.setWidgetsState("normal"),  # Habilitar widgets nuevamente,
                         self.export_path.config(state="readonly"),
+                        self.origin_database.config(state="readonly"),
                         messagebox.showinfo("Éxito", "Exportación completada exitosamente.")
                     ])
                 except Exception as e:
                     error_msg = str(e)
+                    print(f"Error al exportar: {error_msg}")
                     self.root.after(0, lambda: [
                         self.stopTime(),
                         self.setWidgetsState("normal"),  # Habilitar widgets nuevamente
                         self.export_path.config(state="readonly"),
+                        self.origin_database.config(state="readonly"),
                         messagebox.showerror("Error", f"Error al exportar: {error_msg}")
                     ])
             threading.Thread(target=runExport).start()
@@ -255,7 +273,9 @@ class ExportApp:
             self.stopTime(),
             self.setWidgetsState("normal")  # Habilitar widgets nuevamente,
             self.export_path.config(state="readonly"),
+            self.origin_database.config(state="readonly"),
             messagebox.showerror("Error", f"Error al exportar: {e}")
+            print(f"Error al exportar: {e}")
             return
     def centerWindow(self, width:int, height:int):
         self.root.withdraw()  # Oculta temporalmente
@@ -275,8 +295,7 @@ class ExportApp:
         selectPath = filedialog.askdirectory(initialdir=home_dir, title="Seleccionar Ruta de Exportación")
         if selectPath:
             self.output_directory.set(selectPath)
-        else:
-            messagebox.showwarning("Advertencia", "No seleccionaste una carpeta de destino")
+        
     def update_progress(self, key: str, value: tuple):
         if key in self.progress_bars:
             current, total = value
@@ -328,3 +347,17 @@ class ExportApp:
     def stopExport(self):
         self.start_time = None
         self.setWidgetsState("normal")
+    
+    def update_combobox_database(self):
+        
+        host = self.host.get()
+        user = self.user.get()
+        password = self.password.get()
+        
+        if(host and user and password):
+            bases = get_list_database(host,user,password)
+            self.origin_database["values"] = bases
+        else:
+            # Si algino de los campos no estan completos, limpiar la lista de bases de datos
+            self.origin_database["values"] = []
+            

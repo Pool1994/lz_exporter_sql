@@ -1,5 +1,5 @@
 import os
-import pymysql
+import mysql.connector
 import gc
 from config.db_config import DBConfig
 from config.export_options import ExportOptions
@@ -12,7 +12,6 @@ from exporter.data_table_exporter import DataTableExporter
 from pprint import pprint
 from config.progress_callback import ProgressCallback
 from helpers.utils import joinFilePath, mergeAllFiles, mergeSqlFiles
-from pymysql.cursors import DictCursor
 class BaseExporter:
     def __init__(self,db_config:DBConfig, export_options:ExportOptions, output_directory:str,progress_callbacks:ProgressCallback):
         self.db_config = db_config
@@ -21,16 +20,16 @@ class BaseExporter:
         self.progress_callbacks = progress_callbacks
     
     def export_all(self):
-        conn = pymysql.connect(
+        print(f"Conector usado: {mysql.connector.__file__}")
+        conn = mysql.connector.connect(
             host= self.db_config.host,
             user= self.db_config.user,
             password= self.db_config.password,
-            database= self.db_config.database,
-            cursorclass=pymysql.cursors.DictCursor
+            database= self.db_config.database
         )
         
         try:
-            cursor = conn.cursor(cursor=DictCursor)
+            cursor = conn.cursor(dictionary=True)
             db=self.db_config.database
             
             output_dir = os.path.join("export_sql",f"{db}_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
@@ -52,7 +51,7 @@ class BaseExporter:
                     base_folder=output_dir,
                     progress_callback= self.progress_callbacks.tables
                 )
-                path_dir = table_export.export_database()
+                path_dir = table_export.export()
                 mergeSqlFiles(path_dir,filesPaths[0])
         
             # Seccion 2: Exportar objetos almacenados
