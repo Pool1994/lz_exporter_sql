@@ -1,7 +1,8 @@
 import os
 import gc
 from mysql.connector.abstracts import MySQLCursorAbstract
-from results_exporter import ResultsExporter
+from exporter.results_exporter import ResultsExporter
+
 
 class DataTableExporter:
     def __init__(self, cursor: MySQLCursorAbstract, dbName: str, base_folder: str, progress_callback: tuple[int,int]):
