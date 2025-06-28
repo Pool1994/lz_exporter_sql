@@ -14,7 +14,7 @@ from exporter.functions_exporter import FunctionsExporter
 from exporter.data_table_exporter import DataTableExporter
 from pprint import pprint
 from config.progress_callback import ProgressCallback
-from helpers.utils import joinFilePath, mergeAllFiles, mergeSqlFiles
+from helpers.utils import join_file_path, merge_all_files, merge_sql_files
 from exporter.export_path import ExportPath
 class BaseExporter:
     def __init__(self,db_config:DBConfig, export_options:ExportOptions, output_directory:str,progress_callbacks:ProgressCallback):
@@ -40,14 +40,8 @@ class BaseExporter:
             os.makedirs(output_dir, exist_ok=True)
         
             filesPaths: List[ExportPath] = []
-            # 
-            #     joinFilePath(output_dir,'00_stored_procedures.sql'),
-            #     joinFilePath(output_dir,'00_triggers.sql'),
-            #     joinFilePath(output_dir,'00_events.sql'),
-            #     joinFilePath(output_dir,'00_functions.sql'),
-            
             total_final = 0
-        
+            
             # Seccion 1: Exportar estructura de tablas
             if self.export_options.table_data:
                 table_export = DataTableExporter(
@@ -61,7 +55,7 @@ class BaseExporter:
                 filesPaths.append(
                     ExportPath(
                         result_export.path_dir,
-                        joinFilePath(output_dir,'00_tables.sql')
+                        join_file_path(output_dir,'00_tables.sql')
                     )
                 )
             # Seccion 2: Exportar objetos almacenados
@@ -77,7 +71,7 @@ class BaseExporter:
                 filesPaths.append(
                     ExportPath(
                         result_export.path_dir,
-                        joinFilePath(output_dir,'00_stored_procedures.sql')
+                        join_file_path(output_dir,'00_stored_procedures.sql')
                     )
                 )
             # Seccion 3: Exportar disparadores (triggers)
@@ -93,7 +87,7 @@ class BaseExporter:
                 filesPaths.append(
                     ExportPath(
                         result_export.path_dir,
-                        joinFilePath(output_dir,'00_triggers.sql')
+                        join_file_path(output_dir,'00_triggers.sql')
                     )
                 )
             # Seccion 4: Exportar eventos
@@ -109,7 +103,7 @@ class BaseExporter:
                 filesPaths.append(
                     ExportPath(
                         result_export.path_dir,
-                        joinFilePath(output_dir,'00_events.sql')
+                        join_file_path(output_dir,'00_events.sql')
                     )
                 )
             # Seccion 5: Exportar funciones
@@ -125,19 +119,19 @@ class BaseExporter:
                 filesPaths.append(
                     ExportPath(
                         result_export.path_dir,
-                        joinFilePath(output_dir,'00_functions.sql')
+                        join_file_path(output_dir,'00_functions.sql')
                     )
                 )
             
             print(f"Total: {total_final}")
             print(f"Archivo as exportar: {filesPaths}")
             #merge files
-            # mergeSqlFiles(path_dir,filesPaths[0])
-            # mergeSqlFiles(path_dir,filesPaths[1])
-            # mergeSqlFiles(path_dir, filesPaths[2])
-            # mergeSqlFiles(path_dir, filesPaths[3])
-            # mergeSqlFiles(path_dir, filesPaths[4])
-            # mergeAllFiles(filesPaths, joinFilePath(self.output_directory,f"{self.db_config.database}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sql"))
+            # merge_sql_files(path_dir,filesPaths[0])
+            # merge_sql_files(path_dir,filesPaths[1])
+            # merge_sql_files(path_dir, filesPaths[2])
+            # merge_sql_files(path_dir, filesPaths[3])
+            # merge_sql_files(path_dir, filesPaths[4])
+            # merge_all_files(filesPaths, join_file_path(self.output_directory,f"{self.db_config.database}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sql"))
         except Exception as e:
             print(f"Error al exportar: {e}")
         finally:

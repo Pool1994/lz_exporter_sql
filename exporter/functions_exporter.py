@@ -1,6 +1,6 @@
 import os
 import gc
-from helpers.utils import cleanDefiner, saveSqlFile
+from helpers.utils import clean_definer, save_sql_file
 from mysql.connector.abstracts import MySQLCursorAbstract
 from exporter.results_exporter import ResultsExporter
 
@@ -23,8 +23,8 @@ class FunctionsExporter:
                 self.cursor.execute(f"SHOW CREATE FUNCTION `{name}`")
                 res = self.cursor.fetchone()
                 if res and 'Create Function' in res:
-                    sql = cleanDefiner(res['Create Function'])
-                    saveSqlFile(self.path_dir, name, sql)
+                    sql = clean_definer(res['Create Function'])
+                    save_sql_file(self.path_dir, name, sql)
             except Exception as e:
                 print(f"Error al ejecutar SHOW CREATE FUNCTION para {name}: {e}")
                 continue

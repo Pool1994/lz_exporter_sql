@@ -5,14 +5,14 @@ from exporter.results_exporter import ResultsExporter
 
 
 class DataTableExporter:
-    def __init__(self, cursor: MySQLCursorAbstract, dbName: str, base_folder: str, progress_callback: tuple[int,int]):
+    def __init__(self, cursor: MySQLCursorAbstract, db_name: str, base_folder: str, progress_callback: tuple[int,int]):
         self.cursor = cursor
-        self.dbName = dbName
+        self.db_name = db_name
         self.path_dir = os.path.join(base_folder, "tablas")
         os.makedirs(self.path_dir, exist_ok=True)
         self.progress_callback = progress_callback
 
-    def getTableNames(self):
+    def get_table_names(self):
         self.cursor.execute("SHOW FULL TABLES WHERE Table_type = 'BASE TABLE'")
         rows = self.cursor.fetchall()
         if not rows:
@@ -20,8 +20,8 @@ class DataTableExporter:
         table_column_key = list(rows[0].keys())[0]
         return [row[table_column_key] for row in rows]
 
-    def getCreateTableNames(self, tableName: str):
-        self.cursor.execute(f"SHOW CREATE TABLE `{tableName}`")
+    def get_create_table_names(self, table_name: str):
+        self.cursor.execute(f"SHOW CREATE TABLE `{table_name}`")
         res = self.cursor.fetchone()
         if res and 'Create Table' in res:
             return res['Create Table']
@@ -41,35 +41,35 @@ class DataTableExporter:
             )
             return f"'{val}'"
 
-    def exportTableToFile(self, tableName: str):
-        create_stmt = self.getCreateTableNames(tableName)
+    def export_table_to_file(self, table_name: str):
+        create_stmt = self.get_create_table_names(table_name)
         if not create_stmt:
-            print(f"No se pudo obtener la estructura de la tabla: {tableName}")
+            print(f"No se pudo obtener la estructura de la tabla: {table_name}")
             return None
 
-        path = os.path.join(self.path_dir, f"{tableName}.sql")
+        path = os.path.join(self.path_dir, f"{table_name}.sql")
 
         with open(path, "w", encoding="utf-8") as f:
             # Escribir estructura de tabla
-            f.write(f"-- \n-- Table structure for table `{tableName}`\n-- \n\n")
-            f.write(f"DROP TABLE IF EXISTS `{tableName}`;\n")
+            f.write(f"-- \n-- Table structure for table `{table_name}`\n-- \n\n")
+            f.write(f"DROP TABLE IF EXISTS `{table_name}`;\n")
             f.write("/*!40101 SET @saved_cs_client     = @@character_set_client */;\n")
             f.write("/*!50503 SET character_set_client = utf8mb4 */;\n")
             f.write(f"{create_stmt};\n")
             f.write("/*!40101 SET character_set_client = @saved_cs_client */;\n\n")
 
             # Escribir datos
-            self.cursor.execute(f"SELECT * FROM `{tableName}`")
+            self.cursor.execute(f"SELECT * FROM `{table_name}`")
             rows = self.cursor.fetchall()
             if not rows:
                 return
 
             cols_names = [f"`{col}`" for col in rows[0].keys()]
-            f.write(f"-- \n-- Dumping data for table `{tableName}`\n-- \n\n")
-            f.write(f"LOCK TABLES `{tableName}` WRITE;\n")
-            f.write(f"/*!40000 ALTER TABLE `{tableName}` DISABLE KEYS */;\n")
+            f.write(f"-- \n-- Dumping data for table `{table_name}`\n-- \n\n")
+            f.write(f"LOCK TABLES `{table_name}` WRITE;\n")
+            f.write(f"/*!40000 ALTER TABLE `{table_name}` DISABLE KEYS */;\n")
 
-            insert_prefix = f"INSERT INTO `{tableName}` ({', '.join(cols_names)}) VALUES\n"
+            insert_prefix = f"INSERT INTO `{table_name}` ({', '.join(cols_names)}) VALUES\n"
             batch_size = 100
             values_buffer = []
 
@@ -83,7 +83,7 @@ class DataTableExporter:
                     f.write(insert_prefix + ",\n".join(values_buffer) + ";\n")
                     values_buffer.clear()
 
-            f.write(f"/*!40000 ALTER TABLE `{tableName}` ENABLE KEYS */;\n")
+            f.write(f"/*!40000 ALTER TABLE `{table_name}` ENABLE KEYS */;\n")
             f.write("UNLOCK TABLES;\n")
             del rows
             del cols_names
@@ -92,10 +92,10 @@ class DataTableExporter:
         return create_stmt
 
     def export(self):
-        table_names = self.getTableNames()
+        table_names = self.get_table_names()
         total = len(table_names)
         for i,table in enumerate(table_names, start=1):
-            self.exportTableToFile(table)
+            self.export_table_to_file(table)
             gc.collect()
             
             if self.progress_callback:

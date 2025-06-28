@@ -2,7 +2,7 @@
 import os
 import re
 
-def cleanDefiner(create_stmt:str) -> str:
+def clean_definer(create_stmt:str) -> str:
     """
     Limpia el DEFINER del CREATE y agrega delimitadores para bloque SQL.
     """
@@ -13,14 +13,14 @@ def cleanDefiner(create_stmt:str) -> str:
     final_stmt = f"DELIMITER $$\n\n{stmt_without_definer} $$\n\nDELIMITER ;\n"
     return final_stmt
 
-def saveSqlFile(folder:str,name:str,sql:str) -> str:
+def save_sql_file(folder:str,name:str,sql:str) -> str:
     os.makedirs(folder, exist_ok=True)
     path = os.path.join(folder,f"{name}.sql")
     with open(path, "w", encoding="utf-8") as file:
         file.write(sql+"\n")
     return path
 
-def mergeSqlFiles(directory:str,outputFile:str) -> str:
+def merge_sql_files(directory:str,outputFile:str) -> str:
     
     if not os.path.exists(directory):
         return
@@ -43,10 +43,10 @@ def mergeSqlFiles(directory:str,outputFile:str) -> str:
     if not os.listdir(directory):
         os.rmdir(directory)
 
-def joinFilePath(directory:str,fileName:str) -> str:
+def join_file_path(directory:str,fileName:str) -> str:
     return os.path.join(directory,fileName)
 
-def mergeAllFiles(files:list[str], destinationFile:str):
+def merge_all_files(files:list[str], destinationFile:str):
     
     header = [
         "START TRANSACTION;",
