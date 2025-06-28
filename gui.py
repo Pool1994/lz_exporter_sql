@@ -13,7 +13,7 @@ from exporter.list_databases import get_list_database
 class ExportApp:
     def __init__(self, root: ttk.Window):
         self.root = root
-        self.root.protocol("WM_DELETE_WINDOW", self.onClosing)  # Manejar cierre de ventana
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)  # Manejar cierre de ventana
         self.root.title("Database Export Tool")
         self.root.resizable(False, False)
         self.progress_bars = {}
@@ -86,7 +86,7 @@ class ExportApp:
         #PATH
         ttk.Label(origin_frame, text="Carpeta de destino para la exportación:", font=("Helvetica","9","bold")).grid(row=8, column=0, sticky="w")
         self.export_path.grid(row=9, column=0, sticky="ew",pady=2)
-        ttk.Button(origin_frame,text="Elegir Carpeta", bootstyle="secondary",command=self.selectOutputPath).grid(row=9,column=1,sticky="e",pady=(0, 5))
+        ttk.Button(origin_frame,text="Elegir Carpeta", bootstyle="secondary",command=self.select_output_path).grid(row=9,column=1,sticky="e",pady=(0, 5))
         
         #configurar los enventos para actualizar la lista de bases de datos
         self.host.trace_add("write",lambda *args: self.update_combobox_database())
@@ -152,7 +152,7 @@ class ExportApp:
         #     main_frame,
         #     text="🛑 Stop",
         #     bootstyle="primary",
-        #     command=self.stopExport,
+        #     command=self.stop_export,
         # )
         # stop_button.grid(row=2, column=1, columnspan=3)
         
@@ -210,7 +210,7 @@ class ExportApp:
         try:
             self.start_time = time.time()
             self.start_time_temp = self.start_time
-            self.updateTimer()
+            self.update_timer()
             
             db_config_var = DBConfig(
                 host=db_config["host"],
@@ -233,7 +233,7 @@ class ExportApp:
                 functions=lambda val: self.update_progress("functions", val),
                 tables=lambda val: self.update_progress("data_table", val)
             )
-            self.setWidgetsState("disabled")  # Deshabilitar widgets durante la exportación
+            self.set_widgets_state("disabled")  # Deshabilitar widgets durante la exportación
             def runExport():
                 try:
                     self.update_progress("data_table", (0,0))
@@ -251,8 +251,8 @@ class ExportApp:
                     export_base.export_all()
                      # Mostrar mensaje final en el hilo principal
                     self.root.after(0, lambda: [
-                        self.stopTime(),
-                        self.setWidgetsState("normal"),  # Habilitar widgets nuevamente,
+                        self.stop_time(),
+                        self.set_widgets_state("normal"),  # Habilitar widgets nuevamente,
                         self.export_path.config(state="readonly"),
                         self.origin_database.config(state="readonly"),
                         messagebox.showinfo("Éxito", "Exportación completada exitosamente.")
@@ -261,8 +261,8 @@ class ExportApp:
                     error_msg = str(e)
                     print(f"Error al exportar: {error_msg}")
                     self.root.after(0, lambda: [
-                        self.stopTime(),
-                        self.setWidgetsState("normal"),  # Habilitar widgets nuevamente
+                        self.stop_time(),
+                        self.set_widgets_state("normal"),  # Habilitar widgets nuevamente
                         self.export_path.config(state="readonly"),
                         self.origin_database.config(state="readonly"),
                         messagebox.showerror("Error", f"Error al exportar: {error_msg}")
@@ -270,14 +270,14 @@ class ExportApp:
             threading.Thread(target=runExport).start()
             
         except Exception as e:
-            self.stopTime(),
-            self.setWidgetsState("normal")  # Habilitar widgets nuevamente,
+            self.stop_time(),
+            self.set_widgets_state("normal")  # Habilitar widgets nuevamente,
             self.export_path.config(state="readonly"),
             self.origin_database.config(state="readonly"),
             messagebox.showerror("Error", f"Error al exportar: {e}")
             print(f"Error al exportar: {e}")
             return
-    def centerWindow(self, width:int, height:int):
+    def center_window(self, width:int, height:int):
         self.root.withdraw()  # Oculta temporalmente
         self.root.update_idletasks()  # Procesa eventos pendientes
 
@@ -290,7 +290,7 @@ class ExportApp:
         self.root.geometry(f"{width}x{height}+{x}+{y}")
         self.root.deiconify()  # Muestra la ventana ya centrada
         
-    def selectOutputPath(self):
+    def select_output_path(self):
         home_dir = os.path.expanduser("~")
         selectPath = filedialog.askdirectory(initialdir=home_dir, title="Seleccionar Ruta de Exportación")
         if selectPath:
@@ -305,7 +305,7 @@ class ExportApp:
             self.progress_bars[key]["label"].config(text=f"{percentage}%")
             self.progress_bars[key]["bar"].update_idletasks()
     
-    def updateTimer(self):
+    def update_timer(self):
         if self.start_time is None:
             return  # Detener temporizador si ya se completó
 
@@ -315,9 +315,9 @@ class ExportApp:
         tiempo_formateado = f"{hrs:02}:{mins:02}:{secs:02}"
 
         self.elapsed_time_label.config(text=f"Tiempo transcurrido: {tiempo_formateado}")
-        self.root.after(1000, self.updateTimer)  # Actualizar cada segundo
+        self.root.after(1000, self.update_timer)  # Actualizar cada segundo
     
-    def stopTime(self):
+    def stop_time(self):
         final_elapsed = int(time.time() - self.start_time_temp)
         hrs, rem = divmod(final_elapsed, 3600)
         mins, secs = divmod(rem, 60)
@@ -326,7 +326,7 @@ class ExportApp:
 
         self.start_time = None  # Detener temporizador
         
-    def setWidgetsState(self,state:str):
+    def set_widgets_state(self,state:str):
         for child in self.root.winfo_children():
             self._set_state_recursive(child,state)
 
@@ -338,15 +338,15 @@ class ExportApp:
             pass
         for child in widget.winfo_children():
             self._set_state_recursive(child, state)
-    def onClosing(self):
+    def on_closing(self):
         if self.start_time is not None:
             messagebox.showwarning("Exportación en curso", "Espera a que finalice para cerrar la aplicación.")
         else:
             self.root.destroy()
     
-    def stopExport(self):
+    def stop_export(self):
         self.start_time = None
-        self.setWidgetsState("normal")
+        self.set_widgets_state("normal")
     
     def update_combobox_database(self):
         
