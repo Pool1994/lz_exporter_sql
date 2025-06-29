@@ -3,7 +3,6 @@ import gc
 from mysql.connector.abstracts import MySQLCursorAbstract
 from exporter.results_exporter import ResultsExporter
 
-
 class DataTableExporter:
     def __init__(self, cursor: MySQLCursorAbstract, db_name: str, base_folder: str, progress_callback: tuple[int,int]):
         self.cursor = cursor
@@ -48,8 +47,9 @@ class DataTableExporter:
             return None
 
         path = os.path.join(self.path_dir, f"{table_name}.sql")
-
+        
         with open(path, "w", encoding="utf-8") as f:
+           
             # Escribir estructura de tabla
             f.write(f"-- \n-- Table structure for table `{table_name}`\n-- \n\n")
             f.write(f"DROP TABLE IF EXISTS `{table_name}`;\n")
@@ -70,7 +70,7 @@ class DataTableExporter:
             f.write(f"/*!40000 ALTER TABLE `{table_name}` DISABLE KEYS */;\n")
 
             insert_prefix = f"INSERT INTO `{table_name}` ({', '.join(cols_names)}) VALUES\n"
-            batch_size = 100
+            batch_size = 10
             values_buffer = []
 
             for i, row in enumerate(rows):
@@ -89,15 +89,20 @@ class DataTableExporter:
             del cols_names
             gc.collect()
 
+        # # Ejecutar comandos en la base de destino
+        # execute_sql_file(path,self.access_db_destino)
         return create_stmt
 
     def export(self):
         table_names = self.get_table_names()
         total = len(table_names)
+        
+        # cursor_destino.execute("SET FOREIGN_KEY_CHECKS = 0;")
         for i,table in enumerate(table_names, start=1):
             self.export_table_to_file(table)
             gc.collect()
             
             if self.progress_callback:
-                self.progress_callback((i, total))   
+                self.progress_callback((i, total))
+        # cursor_destino.execute("SET FOREIGN_KEY_CHECKS = 1;")
         return ResultsExporter(total,self.path_dir)

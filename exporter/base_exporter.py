@@ -14,8 +14,10 @@ from exporter.functions_exporter import FunctionsExporter
 from exporter.data_table_exporter import DataTableExporter
 from pprint import pprint
 from config.progress_callback import ProgressCallback
-from helpers.utils import join_file_path, merge_all_files, merge_sql_files
+from helpers.utils import join_file_path, merge_all_files, merge_sql_files,directory_exists
 from exporter.export_path import ExportPath
+
+
 class BaseExporter:
     def __init__(self,db_config:DBConfig, export_options:ExportOptions, output_directory:str,progress_callbacks:ProgressCallback):
         self.db_config = db_config
@@ -24,18 +26,20 @@ class BaseExporter:
         self.progress_callbacks = progress_callbacks
     
     def export_all(self):
-        print(f"Conector usado: {mysql.connector.__file__}")
-        conn = mysql.connector.connect(
+       
+        cnx_origen = mysql.connector.connect(
             host= self.db_config.host,
             user= self.db_config.user,
             password= self.db_config.password,
             database= self.db_config.database
         )
+        cursor_origen = cnx_origen.cursor(dictionary=True)
         
         try:
-            cursor = conn.cursor(dictionary=True)
+           
             db=self.db_config.database
             
+            # Crear directorio de salida
             output_dir = os.path.join("export_sql",f"{db}_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
             os.makedirs(output_dir, exist_ok=True)
         
@@ -45,8 +49,8 @@ class BaseExporter:
             # Seccion 1: Exportar estructura de tablas
             if self.export_options.table_data:
                 table_export = DataTableExporter(
-                    cursor=cursor, 
-                    dbName=db, 
+                    cursor=cursor_origen, 
+                    db_name=db, 
                     base_folder=output_dir,
                     progress_callback= self.progress_callbacks.tables
                 )
@@ -61,7 +65,7 @@ class BaseExporter:
             # Seccion 2: Exportar objetos almacenados
             if self.export_options.store_procedures:
                 storeProcedure = StoreProcedureExporter(
-                    cursor=cursor, 
+                    cursor=cursor_origen, 
                     dbName=db, 
                     base_folder= output_dir,
                     progress_callback= self.progress_callbacks.procedures
@@ -77,7 +81,7 @@ class BaseExporter:
             # Seccion 3: Exportar disparadores (triggers)
             if self.export_options.triggers:
                 triggers = TriggerExporter(
-                    cursor=cursor, 
+                    cursor=cursor_origen, 
                     dbName=db, 
                     base_folder= output_dir,
                     progress_callback= self.progress_callbacks.triggers
@@ -93,8 +97,8 @@ class BaseExporter:
             # Seccion 4: Exportar eventos
             if self.export_options.events:
                 events_exp = EventExporter(
-                    cursor=cursor, 
-                    dbName=db, 
+                    cursor=cursor_origen, 
+                    db_name=db, 
                     base_folder= output_dir,
                     progress_callback= self.progress_callbacks.events
                 )
@@ -109,7 +113,7 @@ class BaseExporter:
             # Seccion 5: Exportar funciones
             if self.export_options.functions:
                 functions_ex = FunctionsExporter(
-                    cursor=cursor, 
+                    cursor=cursor_origen, 
                     dbName=db, 
                     base_folder= output_dir,
                     progress_callback= self.progress_callbacks.functions
@@ -122,21 +126,41 @@ class BaseExporter:
                         join_file_path(output_dir,'00_functions.sql')
                     )
                 )
+            cnx_origen.close()
+            cursor_origen.close()
+            gc.collect()
             
-            print(f"Total: {total_final}")
-            print(f"Archivo as exportar: {filesPaths}")
             #merge files
-            # merge_sql_files(path_dir,filesPaths[0])
-            # merge_sql_files(path_dir,filesPaths[1])
-            # merge_sql_files(path_dir, filesPaths[2])
-            # merge_sql_files(path_dir, filesPaths[3])
-            # merge_sql_files(path_dir, filesPaths[4])
-            # merge_all_files(filesPaths, join_file_path(self.output_directory,f"{self.db_config.database}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sql"))
+            total_directories = sum(
+                1 for group in filesPaths
+                if directory_exists(group.path)
+            )
+           
+            start_index = 1
+            
+            for files_group in filesPaths:
+                start_index = merge_sql_files(
+                    files_group.path,
+                    files_group.output_file,
+                    self.progress_callbacks.merge_files,
+                    total_final,
+                    start_index
+                )
+            
+            merge_all_files(
+                filesPaths, 
+                join_file_path(
+                    self.output_directory,
+                    f"{self.db_config.database}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sql"
+                ),
+                self.progress_callbacks.backup,
+                total_directories
+            )
         except Exception as e:
-            print(f"Error al exportar: {e}")
+            raise e
         finally:
-            conn.close()
-            del cursor
+            cnx_origen.close()
+            cursor_origen.close()
             gc.collect()
             
         

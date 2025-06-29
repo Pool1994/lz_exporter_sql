@@ -2,6 +2,11 @@
 import os
 import re
 
+from exporter.database_destino import DatabaseDestino
+from typing import Callable,Tuple
+import subprocess
+from exporter.export_path import ExportPath
+
 def clean_definer(create_stmt:str) -> str:
     """
     Limpia el DEFINER del CREATE y agrega delimitadores para bloque SQL.
@@ -20,10 +25,10 @@ def save_sql_file(folder:str,name:str,sql:str) -> str:
         file.write(sql+"\n")
     return path
 
-def merge_sql_files(directory:str,outputFile:str) -> str:
+def merge_sql_files(directory:str,outputFile:str,progress_callback:Callable[[Tuple[int,int]], None],total_files:int,start_index:int=1) -> int:
     
     if not os.path.exists(directory):
-        return
+        return start_index
     files_merged = 0
     with open(outputFile,'w', encoding="utf-8") as outfile:
         for fileName in sorted(os.listdir(directory)):
@@ -36,6 +41,10 @@ def merge_sql_files(directory:str,outputFile:str) -> str:
                 outfile.write("\n\n") 
                 os.remove(filePath)
                 files_merged += 1
+                
+                if progress_callback:
+                    progress_callback((start_index,total_files))
+                    start_index += 1
     if files_merged == 0:
         print(f"[INFO] No se encontraron archivos SQL en '{directory}' para fusionar.")
 
@@ -43,10 +52,12 @@ def merge_sql_files(directory:str,outputFile:str) -> str:
     if not os.listdir(directory):
         os.rmdir(directory)
 
+    return start_index
+
 def join_file_path(directory:str,fileName:str) -> str:
     return os.path.join(directory,fileName)
 
-def merge_all_files(files:list[str], destinationFile:str):
+def merge_all_files(files:list[ExportPath], destinationFile:str, progress_callback:Callable[[Tuple[int,int]], None],total_files:int):
     
     header = [
         "START TRANSACTION;",
@@ -73,22 +84,46 @@ def merge_all_files(files:list[str], destinationFile:str):
         "/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;",
         "/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;"
     ]
-    
+    start_index = 1
     with open(destinationFile,'w',encoding="utf-8") as outfile:
         outfile.write("\n".join(header) + "\n\n")
         for filePath in files:
-            if os.path.exists(filePath):
-                outfile.write(f"--- Inicio de: {os.path.basename(filePath)} ---\n")
-                with open(filePath,'r', encoding="utf-8") as infile:
+            if os.path.exists(filePath.output_file):
+                outfile.write(f"--- Inicio de: {os.path.basename(filePath.output_file)} ---\n")
+                with open(filePath.output_file,'r', encoding="utf-8") as infile:
                     for line in infile:
                         outfile.write(line)
                 outfile.write("\n\n")
                 # eliminar archivo original
-                os.remove(filePath)
+                os.remove(filePath.output_file)
+                
+                if progress_callback:
+                    progress_callback((start_index,total_files))
+                    start_index += 1
             else:
-                print(f"[ERROR] Archivo {os.path.basename(filePath)} no existe.")
+                print(f"[ERROR] Archivo {os.path.basename(filePath.output_file)} no existe.")
         outfile.write("\n".join(footer) + "\n\n")
     # Eliminar directorio si está vacío
-    folder = os.path.dirname(files[0])
+    folder = os.path.dirname(files[0].output_file)
     if os.path.exists(folder) and not os.listdir(folder):
         os.rmdir(folder)
+        
+def execute_sql_file(filePath:str,access_db_destino:DatabaseDestino):
+    
+    command = [
+        "mysql",
+        f"--host={access_db_destino.host}",
+        f"--user={access_db_destino.user}",
+        f"--password={access_db_destino.password}",
+        access_db_destino.database
+    ]
+    
+    with open(filePath,'r',encoding="utf-8") as infile:
+        try:
+           subprocess.run(command,stdin=infile,check=True)
+           print(f"Archivo {os.path.basename(filePath)} ejecutado correctamente.")
+        except Exception as e:
+            print(f"Error al ejecutar el archivo {os.path.basename(filePath)}: {e}")
+
+def directory_exists(directory:str) -> bool:
+    return os.path.exists(directory)
