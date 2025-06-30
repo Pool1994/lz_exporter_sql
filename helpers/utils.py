@@ -89,7 +89,7 @@ def merge_all_files(files:list[ExportPath], destinationFile:str, progress_callba
         outfile.write("\n".join(header) + "\n\n")
         for filePath in files:
             if os.path.exists(filePath.output_file):
-                outfile.write(f"--- Inicio de: {os.path.basename(filePath.output_file)} ---\n")
+                outfile.write(f"-- Inicio de: {os.path.basename(filePath.output_file)} \n")
                 with open(filePath.output_file,'r', encoding="utf-8") as infile:
                     for line in infile:
                         outfile.write(line)
